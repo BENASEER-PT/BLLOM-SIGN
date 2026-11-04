@@ -1,0 +1,1105 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Sign &amp; Bloom</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Layout concept: a cozy flower-garden learning home with drifting petals. Rounded soft cards, dashed outlines for
+   anything that is a journey or a prompt, a sticky top bar on desktop and a thumb-height tab bar on phones.
+   Palette is four yarn colours (rose, sage, butter, sky) on a lilac-tinted paper. */
+:root{
+  --font-display:'Fredoka',ui-rounded,'Nunito',system-ui,sans-serif;
+  --font-body:'Nunito',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --font-hand:'Caveat','Bradley Hand','Segoe Script',cursive;
+  --bg:#F5F1FA; --surface:#FFFFFF; --surface-2:#EDE6F6; --ink:#2F2440; --ink-soft:#64577A; --line:#D9CEE8; --stitch:#BFAEDA;
+  --rose:#C93F66; --rose-soft:#FBE0E8; --on-rose:#FFFFFF;
+  --sage:#3F7A59; --sage-soft:#DCEFE3; --on-sage:#FFFFFF;
+  --butter:#E3AE2E; --butter-soft:#FFF0C7; --butter-ink:#775600; --on-butter:#2F2440;
+  --sky:#3C74B8; --sky-soft:#DBE9F9; --on-sky:#FFFFFF;
+  --leaf:#4E9A6C; --soil:#6B4F42; --focus:#3C74B8;
+  --shadow:0 1px 0 rgba(47,36,64,.05),0 10px 26px -14px rgba(47,36,64,.35);
+  --scale:1;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#1C1626; --surface:#271F33; --surface-2:#33293F; --ink:#F2ECF9; --ink-soft:#BBAFCD; --line:#463A58; --stitch:#5E4D78;
+  --rose:#F27B9C; --rose-soft:#43222F; --on-rose:#2A0F1A;
+  --sage:#82CBA0; --sage-soft:#233A2D; --on-sage:#10241A;
+  --butter:#F2C14E; --butter-soft:#3E3516; --butter-ink:#F2C14E; --on-butter:#2A2008;
+  --sky:#86B7F0; --sky-soft:#213750; --on-sky:#0E2036;
+  --leaf:#82CBA0; --soil:#A98672; --focus:#9CC4F5; color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --bg:#1C1626; --surface:#271F33; --surface-2:#33293F; --ink:#F2ECF9; --ink-soft:#BBAFCD; --line:#463A58; --stitch:#5E4D78;
+  --rose:#F27B9C; --rose-soft:#43222F; --on-rose:#2A0F1A;
+  --sage:#82CBA0; --sage-soft:#233A2D; --on-sage:#10241A;
+  --butter:#F2C14E; --butter-soft:#3E3516; --butter-ink:#F2C14E; --on-butter:#2A2008;
+  --sky:#86B7F0; --sky-soft:#213750; --on-sky:#0E2036;
+  --leaf:#82CBA0; --soil:#A98672; --focus:#9CC4F5; color-scheme:dark;}
+
+*{box-sizing:border-box}
+html{font-size:calc(100% * var(--scale,1))}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 1rem/1.55 var(--font-body);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 92px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--bg)}
+.wrap{max-width:1160px;margin-inline:auto}
+h1,h2,h3,h4{font-family:var(--font-display);font-weight:600;line-height:1.15;margin:0;text-wrap:balance;letter-spacing:-.005em}
+p{margin:0}
+a{color:var(--sky)}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px;border-radius:8px}
+.muted{color:var(--ink-soft)}
+.eyebrow{font:600 .78rem var(--font-display);letter-spacing:.14em;text-transform:uppercase;color:var(--rose)}
+.h-rose{--h:var(--rose);--hs:var(--rose-soft);--hi:var(--rose);--on-h:var(--on-rose)}
+.h-sage{--h:var(--sage);--hs:var(--sage-soft);--hi:var(--sage);--on-h:var(--on-sage)}
+.h-butter{--h:var(--butter);--hs:var(--butter-soft);--hi:var(--butter-ink);--on-h:var(--on-butter)}
+.h-sky{--h:var(--sky);--hs:var(--sky-soft);--hi:var(--sky);--on-h:var(--on-sky)}
+
+/* top bar */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;background:var(--bg);display:flex;align-items:center;gap:12px;padding-block:10px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);font:600 1.3rem var(--font-display)}
+.brand svg{width:38px;height:38px;flex:none}
+.spacer{flex:1}
+.chip{display:inline-flex;align-items:center;gap:8px;background:var(--surface);border-radius:999px;padding:6px 14px 6px 8px;box-shadow:var(--shadow);font:600 .95rem var(--font-display);white-space:nowrap}
+.chip .ball{width:22px;height:22px;border-radius:50%;background:var(--rose);display:grid;place-items:center}
+.chip .ball svg{width:14px;height:14px;stroke:var(--on-rose);fill:none;stroke-width:2;stroke-linecap:round}
+.chip small{font:600 .75rem var(--font-body);color:var(--ink-soft)}
+.iconbtn{width:44px;height:44px;border-radius:50%;border:0;background:var(--surface);box-shadow:var(--shadow);cursor:pointer;display:grid;place-items:center;font:700 .95rem var(--font-display)}
+.iconbtn svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.iconbtn[aria-pressed="true"]{background:var(--rose);color:var(--on-rose)}
+input[type=range]{width:100%;min-height:34px;accent-color:var(--rose)}
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:45;display:grid;grid-template-columns:repeat(5,1fr);gap:2px;background:var(--surface);border-top:1px solid var(--line);
+  padding:8px max(8px,env(safe-area-inset-left,0px)) calc(8px + env(safe-area-inset-bottom,0px))}
+.tabs a{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 2px;border-radius:14px;text-decoration:none;color:var(--ink-soft);font:600 .74rem var(--font-display);min-height:48px;justify-content:center}
+.tabs a svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tabs a[aria-current="page"]{background:var(--rose-soft);color:var(--rose)}
+@media (min-width:800px){
+  body{padding-bottom:40px}
+  .tabs{position:static;display:flex;background:var(--surface-2);border:0;padding:4px;border-radius:999px;gap:2px}
+  .tabs a{flex-direction:row;gap:8px;padding:8px 16px;font-size:.95rem;min-height:0;border-radius:999px}
+}
+.nowbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;background:var(--butter-soft);border:2px dashed var(--butter);border-radius:18px;padding:12px 16px;margin-bottom:8px}
+.nowbar b{font-family:var(--font-display)}
+.nowbar .pulse{width:12px;height:12px;border-radius:50%;background:var(--rose);animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.5);opacity:.5}}
+
+/* shared bits */
+.view{padding-block:12px 28px}
+.view>header{display:grid;gap:8px;margin-bottom:20px;max-width:46rem}
+.view>header h1{font-size:clamp(2rem,5.4vw,3.1rem)}
+.view>header p{color:var(--ink-soft);font-size:1.06rem}
+.card{background:var(--surface);border-radius:24px;padding:20px;box-shadow:var(--shadow)}
+.stitched{border:2px dashed var(--stitch);border-radius:24px;padding:20px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:.6rem 1.3rem;border-radius:999px;border:0;background:var(--rose);color:var(--on-rose);font:600 1rem var(--font-display);cursor:pointer;text-decoration:none;text-align:center}
+.btn:hover{filter:brightness(1.06)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn.soft{background:var(--surface-2);color:var(--ink)}
+.btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--line)}
+.btn.small{min-height:38px;padding:.35rem .95rem;font-size:.92rem}
+.btn.h{background:var(--h);color:var(--on-h)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.pill{display:inline-flex;align-items:center;padding:3px 12px;border-radius:999px;background:var(--hs,var(--surface-2));color:var(--hi,var(--ink));font:600 .8rem var(--font-display)}
+.grid{display:grid;gap:16px}
+.bar{height:10px;border-radius:99px;background:var(--surface-2);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--h,var(--rose));border-radius:99px;transition:width .4s ease}
+.seg{display:inline-flex;flex-wrap:wrap;gap:4px;background:var(--surface-2);padding:4px;border-radius:999px}
+.seg button{border:0;background:transparent;border-radius:999px;padding:8px 18px;min-height:42px;font:600 .98rem var(--font-display);cursor:pointer;color:var(--ink-soft)}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
+.filters{display:flex;flex-wrap:wrap;gap:8px}
+.filters button{border:2px solid var(--line);background:transparent;border-radius:999px;padding:5px 14px;min-height:40px;cursor:pointer;font:600 .92rem var(--font-display)}
+.filters button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+input[type=text],input[type=time],select{width:100%;min-height:46px;border-radius:14px;border:2px solid var(--line);background:var(--surface);padding:8px 12px}
+label.f{display:grid;gap:4px;font:600 .85rem var(--font-display);color:var(--ink-soft);min-width:0}
+.note{background:var(--sky-soft);border-radius:16px;padding:12px 16px;font-size:.93rem}
+
+/* home */
+.hero{position:relative;display:grid;grid-template-columns:1.15fr .85fr;gap:28px;align-items:center;padding:24px 0 12px}
+.petals{position:absolute;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.petals i{position:absolute;display:block;width:var(--w);height:calc(var(--w)*1.3);border-radius:85% 0 85% 0;background:var(--c);opacity:.38;transform:rotate(var(--r));animation:drift var(--d) ease-in-out var(--dl) infinite}
+@keyframes drift{0%,100%{transform:translate(0,0) rotate(var(--r))}50%{transform:translate(22px,-18px) rotate(calc(var(--r) + 50deg))}}
+.hero>*:not(.petals){position:relative;z-index:1}
+.how4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-block:18px 6px}
+.how4>div{background:var(--surface);border-radius:22px;padding:16px;display:grid;gap:6px;align-content:start;box-shadow:var(--shadow);min-width:0}
+.how4 .pt{width:38px;height:38px;border-radius:85% 0 85% 0;background:var(--hs);color:var(--hi);display:grid;place-items:center;font:700 1rem var(--font-display)}
+.how4 h3{font-size:1.15rem}
+.how4 p{font-size:.93rem;color:var(--ink-soft)}
+.vids{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px}
+.vsrc{display:grid;gap:6px;align-content:start}
+.vsrc a.t{font:600 1.1rem var(--font-display);color:var(--sky)}
+.hero h1{font-size:clamp(2.3rem,6.4vw,4.1rem);margin-block:10px 14px}
+.hero h1 em{font-style:normal;color:var(--rose)}
+.hero p.lead{font-size:1.15rem;color:var(--ink-soft);max-width:34rem}
+.steps{display:flex;flex-wrap:wrap;gap:8px 10px;margin-top:22px;font:600 .95rem var(--font-display)}
+.steps span{display:inline-flex;align-items:center;gap:8px;background:var(--surface);padding:6px 14px 6px 6px;border-radius:999px}
+.steps b{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--rose-soft);color:var(--rose);font-size:.85rem}
+.daily{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-block:18px}
+.stat{border-radius:20px;padding:14px 16px;background:var(--hs);color:var(--ink);min-width:0}
+.stat b{display:block;font:600 2rem/1.1 var(--font-display);font-variant-numeric:tabular-nums}
+.stat span{font-size:.88rem}
+.twocol{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.lv{display:grid;gap:6px;margin-top:12px}
+.opt{position:relative}
+.opt input{position:absolute;opacity:0;inset:0;width:100%;height:100%;margin:0;cursor:pointer}
+.opt span{display:block;padding:9px 16px;border-radius:999px;border:2px solid var(--line);background:var(--surface);font-weight:600;min-height:44px}
+.opt input:checked+span{background:var(--rose);border-color:var(--rose);color:var(--on-rose)}
+.opt input:focus-visible+span{outline:3px solid var(--focus);outline-offset:2px}
+fieldset{border:0;padding:0;margin:0;min-width:0}
+legend{font:600 1.05rem var(--font-display);margin-bottom:8px;padding:0}
+.qs{display:grid;gap:18px;margin-block:14px}
+.tr{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));margin-top:14px}
+
+/* signs */
+.loc{width:84px;height:auto;flex:none}
+.loc .ping{transform-origin:center;transform-box:fill-box;animation:pulse 1.8s ease-in-out infinite}
+.sgrid{grid-template-columns:repeat(auto-fill,minmax(min(100%,290px),1fr))}
+.sign{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;align-content:start}
+.sign .l{grid-row:span 2}
+.sign h3{font-size:1.35rem}
+.sign .how{grid-column:1/-1}
+.sign .face{grid-column:1/-1;font-size:.92rem;color:var(--ink-soft)}
+.hook{grid-column:1/-1;font:600 1.35rem/1.2 var(--font-hand);color:var(--rose)}
+.learned{grid-column:1/-1}
+.tile{background:var(--surface);border-radius:18px;padding:12px 14px;display:grid;gap:4px}
+.tile.hit{background:var(--butter-soft);outline:2px dashed var(--butter)}
+.tile .big{font:700 2.2rem/1 var(--font-display);color:var(--rose)}
+.tile p{font-size:.88rem;color:var(--ink-soft)}
+.agrid{grid-template-columns:repeat(auto-fill,minmax(min(100%,190px),1fr));gap:12px}
+.spell{display:flex;flex-wrap:wrap;gap:12px;margin-block:14px}
+.spell .tile{width:min(100%,200px)}
+.opts{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));margin-top:14px}
+.ans{min-height:52px;border-radius:16px;border:2px solid var(--line);background:var(--surface);font:600 1.05rem var(--font-display);cursor:pointer;padding:8px 12px}
+.ans.ok{background:var(--sage-soft);border-color:var(--sage)}
+.ans.bad{background:var(--rose-soft);border-color:var(--rose)}
+.ans:disabled{cursor:default}
+.qbox{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center}
+
+/* talk */
+.strip{min-height:84px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;background:var(--surface-2);border-radius:20px;padding:12px}
+.strip .ph{color:var(--ink-soft);font-style:italic}
+.bubble{border:0;background:var(--surface);border-radius:14px;padding:8px 14px;min-height:44px;font:600 1.02rem var(--font-body);cursor:pointer;box-shadow:var(--shadow);text-align:left}
+.bubble.sel{background:var(--sky);color:var(--on-sky)}
+.boards{display:grid;gap:22px;margin-top:22px}
+.boards h3{font-size:1.2rem;margin-bottom:10px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.custom{display:inline-flex;gap:2px}
+.custom .bubble{border-radius:14px 0 0 14px}
+.custom .rm{border:0;background:var(--rose-soft);color:var(--rose);width:40px;border-radius:0 14px 14px 0;cursor:pointer;font-size:1.1rem}
+
+/* garden */
+.ggrid{grid-template-columns:repeat(auto-fill,minmax(min(100%,250px),1fr))}
+.skill{display:grid;gap:10px;align-content:start;background:var(--surface);border-radius:24px;padding:18px;box-shadow:var(--shadow)}
+.skill .plant{background:var(--hs);border-radius:18px;display:grid;place-items:end center;height:150px;padding-top:6px}
+.plant svg{height:100%;width:auto;max-width:100%}
+.skill.locked .plant{filter:grayscale(.7);opacity:.75}
+.skill h3{font-size:1.3rem}
+.skill p{font-size:.93rem}
+.quest{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;background:var(--surface);border-radius:18px;padding:12px 14px}
+.quest.lockq{opacity:.55}
+.quest .n{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--hs);color:var(--hi);font:700 .95rem var(--font-display)}
+.quest.done .n{background:var(--h);color:var(--on-h)}
+.quest b{font-family:var(--font-display)}
+.quest p{font-size:.92rem;color:var(--ink-soft)}
+.dots{display:flex;flex-wrap:wrap;gap:6px;max-width:190px}
+.dot{width:18px;height:18px;border-radius:50%;background:var(--sky)}
+.dots.b .dot{background:var(--rose)}
+.dd{display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:center;font:700 1.6rem var(--font-display)}
+.sheetplant{width:130px;height:150px;background:var(--hs);border-radius:22px;display:grid;place-items:end center;padding-top:6px}
+.sheethead{display:flex;gap:18px;align-items:center;margin-bottom:14px}
+ul.tips{margin:6px 0 0;padding-left:1.2rem;display:grid;gap:4px}
+
+/* planner */
+.pform{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));gap:12px;align-items:end}
+.week{display:grid;gap:12px;margin-top:16px}
+@media (min-width:900px){.week{grid-template-columns:repeat(7,minmax(0,1fr))}}
+.day{background:var(--surface);border-radius:20px;padding:12px;min-width:0;display:grid;gap:8px;align-content:start}
+.day.today{outline:3px dashed var(--rose);outline-offset:-3px}
+.day h3{font-size:1.05rem;display:flex;justify-content:space-between;gap:6px;align-items:baseline}
+.day h3 span{font:600 .8rem var(--font-body);color:var(--ink-soft)}
+.day ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.day .empty{font-size:.85rem;color:var(--ink-soft)}
+.sess{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center;border-radius:14px;padding:8px;background:var(--hs)}
+.sess.t-sign{--hs:var(--sky-soft);--h:var(--sky)}
+.sess.t-skill{--hs:var(--sage-soft);--h:var(--sage)}
+.sess.t-rest{--hs:var(--butter-soft);--h:var(--butter)}
+.sess.t-custom{--hs:var(--rose-soft);--h:var(--rose)}
+.sess .sbody{display:grid;min-width:0;line-height:1.25}
+.sess .sbody b{font-size:.92rem;overflow-wrap:anywhere}
+.sess .sbody span{font-size:.78rem;color:var(--ink-soft)}
+.sess.done .sbody b{text-decoration:line-through;opacity:.7}
+.tick{width:30px;height:30px;border-radius:50%;border:2.5px solid var(--h);background:var(--surface);cursor:pointer;padding:0;position:relative}
+.tick[aria-pressed="true"]{background:var(--h)}
+.tick[aria-pressed="true"]::after{content:"";position:absolute;left:8px;top:3px;width:7px;height:13px;border:solid var(--surface);border-width:0 3px 3px 0;transform:rotate(45deg)}
+.sess .x{border:0;background:transparent;font-size:1.3rem;line-height:1;cursor:pointer;color:var(--ink-soft);width:30px;height:30px;border-radius:50%}
+.lesson{display:grid;gap:10px;margin-top:16px}
+.lstep{display:grid;grid-template-columns:auto 1fr;gap:12px;background:var(--surface);border-radius:18px;padding:12px 16px}
+.lstep .m{font:700 1.3rem var(--font-display);color:var(--rose);min-width:3.4rem;font-variant-numeric:tabular-nums}
+.lstep .m small{display:block;font:600 .7rem var(--font-body);color:var(--ink-soft)}
+.lstep b{font-family:var(--font-display)}
+textarea.copyfb{width:100%;min-height:120px;border-radius:14px;border:2px solid var(--line);background:var(--surface);padding:10px}
+
+/* overlays */
+.sheet{position:fixed;inset:0;z-index:70;background:rgba(28,22,38,.6);display:flex;align-items:flex-end;justify-content:center}
+.sheet .panel{background:var(--bg);width:min(780px,100%);max-height:92%;overflow:auto;border-radius:28px 28px 0 0;padding:20px max(16px,env(safe-area-inset-left,0px)) calc(24px + env(safe-area-inset-bottom,0px))}
+@media (min-width:800px){.sheet{align-items:center}.sheet .panel{border-radius:28px;max-height:88%;padding:24px 28px}}
+.big{position:fixed;inset:0;z-index:80;background:var(--ink);color:var(--bg);display:grid;place-items:center;text-align:center;padding:32px max(24px,env(safe-area-inset-left,0px));cursor:pointer}
+.big p{font:600 clamp(2.2rem,9vw,5.2rem)/1.15 var(--font-display);max-width:20ch;text-wrap:balance}
+.big small{position:absolute;bottom:calc(24px + env(safe-area-inset-bottom,0px));left:0;right:0;font-size:1rem;opacity:.75}
+.toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);z-index:90;background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font:600 .95rem var(--font-display);opacity:0;pointer-events:none;transition:.25s;max-width:min(92vw,420px);text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+@media (min-width:800px){.toast{bottom:28px}}
+footer{margin-top:30px;color:var(--ink-soft);font-size:.9rem;display:grid;gap:6px;max-width:44rem}
+
+@media (max-width:860px){
+  .hero{grid-template-columns:1fr}
+  .stats,.how4{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .twocol{grid-template-columns:1fr}
+}
+@media (max-width:520px){
+  .daily,.qbox{grid-template-columns:1fr;justify-items:start}
+  .chip small{display:none}
+  .quest{grid-template-columns:auto 1fr}
+  .how4{grid-template-columns:1fr}
+  .quest .btn{grid-column:1/-1}
+}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="#home" aria-label="Sign and Bloom, home">
+      <svg viewBox="0 0 40 40" aria-hidden="true"><g fill="var(--rose)" stroke="var(--bg)" stroke-width="1"><ellipse cx="20" cy="10" rx="6" ry="9"/><ellipse cx="20" cy="10" rx="6" ry="9" transform="rotate(72 20 20)"/><ellipse cx="20" cy="10" rx="6" ry="9" transform="rotate(144 20 20)"/><ellipse cx="20" cy="10" rx="6" ry="9" transform="rotate(216 20 20)"/><ellipse cx="20" cy="10" rx="6" ry="9" transform="rotate(288 20 20)"/></g><circle cx="20" cy="20" r="5.5" fill="var(--butter)"/></svg>
+      <span>Sign &amp; Bloom</span>
+    </a>
+    <nav class="tabs" id="tabs" aria-label="Main">
+      <a href="#home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Home</a>
+      <a href="#signs"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 13V6a1.5 1.5 0 0 1 3 0v5m0-6a1.5 1.5 0 0 1 3 0v6m0-4a1.5 1.5 0 0 1 3 0v8a6 6 0 0 1-6 6h-1a6 6 0 0 1-5-3l-2-4a1.5 1.5 0 0 1 2.5-1.5L8 15"/></svg>Sign Lab</a>
+      <a href="#talk"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg>Talk</a>
+      <a href="#garden"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21v-9M12 12c0-4 3-6 7-6 0 4-3 6-7 6zM12 15c0-3-2-5-6-5 0 3 2 5 6 5z"/></svg>Garden</a>
+      <a href="#planner"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg>Planner</a>
+    </nav>
+    <span class="spacer"></span>
+    <span class="chip" title="Petals are your points"><span class="ball"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 14C3 11 3 5 8 2c5 3 5 9 0 12z"/></svg></span><span><span id="hStitch">30</span> <small id="hLevel">Seedling</small></span></span>
+    <button class="iconbtn" data-a="music" id="musicTop" aria-pressed="false" aria-label="Play calm music" title="Calm music"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V5l11-2v13"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="17.5" cy="16" r="2.5"/></svg></button>
+    <button class="iconbtn" data-a="scale" id="scaleBtn" aria-label="Change text size">A+</button>
+    <button class="iconbtn" data-a="theme" aria-label="Switch light or dark mode"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/></svg></button>
+  </header>
+
+  <div id="nowBar" class="nowbar" hidden></div>
+
+  <main>
+    <!-- HOME -->
+    <section class="view" id="v-home" hidden>
+      <div class="hero">
+        <div class="petals" id="petals" aria-hidden="true"></div>
+        <div>
+          <p class="eyebrow">Made to be seen, not heard</p>
+          <h1>Talk with your hands. <em>Bloom</em> in every skill you love.</h1>
+          <p class="lead" id="greet">Sign and Bloom is a calm place for deaf and mute learners to pick up sign language and discover new skills like maths, crochet and drawing. Learn signs to collect petals, spend petals to unlock skills, and plan your week with flashing reminders instead of sound. Every lesson is made of pictures, motion guides and video links, so nothing needs hearing.</p>
+          <div class="row" style="margin-top:20px">
+            <a class="btn" href="#signs">Learn a sign</a>
+            <a class="btn soft" href="#garden">Open my garden</a>
+          </div>
+        </div>
+        <div class="card" id="homeDaily"></div>
+      </div>
+      <section class="how4" aria-label="How Sign and Bloom works">
+        <div class="h-sky"><span class="pt">1</span><h3>Learn signs</h3><p><span id="nSigns">80</span> sign cards show where, how and with what face. Watch the motion guide or open a video.</p></div>
+        <div class="h-rose"><span class="pt">2</span><h3>Collect petals</h3><p>Every sign, quiz answer and finished session earns petals and grows your streak.</p></div>
+        <div class="h-sage"><span class="pt">3</span><h3>Unlock skills</h3><p>Spend petals on maths, crochet, drawing and more, then grow each plant with four quests.</p></div>
+        <div class="h-butter"><span class="pt">4</span><h3>Plan your week</h3><p>Set lessons in the planner. Reminders flash and buzz, they never ring.</p></div>
+      </section>
+      <div class="stats" id="homeStats"></div>
+      <div class="twocol">
+        <div class="card" id="homePlan"></div>
+        <div class="stitched">
+          <h2 style="font-size:1.45rem">Find your talent</h2>
+          <p class="muted">Four quick picks. We suggest where to start in the garden.</p>
+          <div class="qs" id="talentQs"></div>
+          <button class="btn" data-a="talent">Show my skills</button>
+          <div class="tr" id="talentOut" aria-live="polite"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SIGN LAB -->
+    <section class="view" id="v-signs" hidden>
+      <header>
+        <p class="eyebrow">Sign Lab</p>
+        <h1>See it. Sign it. Keep it.</h1>
+        <p>Each card shows where on your body the sign happens, how your hands move and what your face should do. Watch the pink dot to see which way your hand moves, open a video, and mark signs you know to earn petals.</p>
+      </header>
+      <div class="seg" role="group" aria-label="Sign Lab sections">
+        <button data-a="signTab" data-v="cards" aria-pressed="true">Sign cards</button>
+        <button data-a="signTab" data-v="quiz" aria-pressed="false">Practice quiz</button>
+        <button data-a="signTab" data-v="spell" aria-pressed="false">Fingerspell</button>
+        <button data-a="signTab" data-v="videos" aria-pressed="false">Videos</button>
+      </div>
+      <div class="note" style="margin-top:14px">These cards follow American Sign Language as a starter set. Indian Sign Language and other sign languages use different signs for many words, so check with a deaf teacher or the <a href="https://islrtc.nic.in" target="_blank" rel="noopener">ISLRTC</a> before you rely on a sign.</div>
+
+      <div id="p-cards" style="margin-top:18px">
+        <div class="row" style="margin-bottom:14px">
+          <label class="f" style="flex:1 1 220px">Search a word<input type="text" id="signSearch" placeholder="Try: water, hello, six" autocomplete="off"></label>
+        </div>
+        <div class="filters" id="signChips" role="group" aria-label="Filter signs"></div>
+        <div class="grid sgrid" id="signGrid" style="margin-top:16px"></div>
+      </div>
+      <div id="p-quiz" style="margin-top:18px" hidden><div class="card" id="quizBox"></div></div>
+      <div id="p-videos" style="margin-top:18px" hidden>
+        <div class="card">
+          <h2 style="font-size:1.4rem">Watch signs in real life</h2>
+          <p class="muted" style="margin-top:6px">Type any word and open video results in a new tab. Choose clips from deaf signers, ideally with captions. The pink dot on each card is only a guide to hand movement, so use a video to check handshapes.</p>
+          <div class="row" style="margin-top:14px;align-items:flex-end">
+            <label class="f" style="flex:1 1 220px">Word to look up<input type="text" id="vidIn" value="Hello" maxlength="30" autocomplete="off"></label>
+            <a class="btn" id="vidAsl" href="https://www.youtube.com/results?search_query=ASL+sign+for+Hello" target="_blank" rel="noopener">ASL videos</a>
+            <a class="btn soft" id="vidIsl" href="https://www.youtube.com/results?search_query=Indian+Sign+Language+sign+for+Hello" target="_blank" rel="noopener">Indian Sign Language videos</a>
+          </div>
+        </div>
+        <h3 style="margin:22px 0 12px;font-size:1.3rem">Places to learn from</h3>
+        <div class="grid sgrid" id="vidLinks"></div>
+      </div>
+      <div id="p-spell" style="margin-top:18px" hidden>
+        <div class="card">
+          <h2 style="font-size:1.4rem">Spell a word with your hands</h2>
+          <p class="muted">Type your name or any word. Each letter shows how to shape your hand.</p>
+          <label class="f" style="margin-top:12px;max-width:340px">Your word<input type="text" id="spellIn" value="Anu" maxlength="14" autocomplete="off"></label>
+          <div class="spell" id="spellOut" aria-live="polite"></div>
+          <button class="btn soft" data-a="alpha" id="alphaBtn">I know the whole alphabet</button>
+        </div>
+        <h3 style="margin:22px 0 12px;font-size:1.3rem">Full alphabet</h3>
+        <div class="grid agrid" id="alphaGrid"></div>
+      </div>
+    </section>
+
+    <!-- TALK -->
+    <section class="view" id="v-talk" hidden>
+      <header>
+        <p class="eyebrow">Talk Board</p>
+        <h1>Tap, build, show.</h1>
+        <p>Build a sentence from ready phrases and show it full screen to anyone, or let your device speak it. Add your own phrases in any language you type.</p>
+      </header>
+      <div class="card">
+        <h2 style="font-size:1.2rem;margin-bottom:10px">Your sentence</h2>
+        <div class="strip" id="strip" aria-live="polite"></div>
+        <div class="row" style="margin-top:12px">
+          <button class="btn" data-a="showBig">Show big</button>
+          <button class="btn soft" data-a="speak">Speak it</button>
+          <button class="btn ghost" data-a="undo">Undo</button>
+          <button class="btn ghost" data-a="clearStrip">Clear</button>
+        </div>
+      </div>
+      <div class="stitched" style="margin-top:16px">
+        <h2 style="font-size:1.2rem">Calm space</h2>
+        <p class="muted" style="margin-top:4px">Soft, slow background music made by your device, and a gentle voice for Speak it. Both start only when you tap, and the music gets quieter while the voice speaks.</p>
+        <div class="pform" style="margin-top:14px">
+          <button class="btn" data-a="music" id="musicBtn" aria-pressed="false">Play calm music</button>
+          <label class="f">Music volume<input type="range" id="musicVol" min="0" max="100" value="40"></label>
+          <label class="f">Voice<select id="voiceSel"><option value="">Device default voice</option></select></label>
+          <label class="f">Voice style<select id="voiceMode"><option value="gentle">Gentle</option><option value="soft">Extra soft</option><option value="normal">Normal</option></select></label>
+          <button class="btn soft" data-a="testVoice">Hear the voice</button>
+        </div>
+      </div>
+      <div class="boards" id="boards"></div>
+      <div class="stitched" style="margin-top:22px">
+        <h3 style="font-size:1.2rem;margin-bottom:10px">Add your own phrase</h3>
+        <div class="row">
+          <label class="f" style="flex:1 1 260px">Phrase<input type="text" id="customIn" maxlength="80" placeholder="Type something you say often" autocomplete="off"></label>
+          <button class="btn" data-a="addCustom" style="align-self:flex-end">Save phrase</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- GARDEN -->
+    <section class="view" id="v-garden" hidden>
+      <header>
+        <p class="eyebrow">Skill Garden</p>
+        <h1>Unlock a skill. Watch it bloom.</h1>
+        <p>Spend petals to unlock a skill, then finish its four quests one by one. Every skill here is taught through pictures, steps and touch, so no hearing is needed.</p>
+      </header>
+      <div class="grid ggrid" id="gardenGrid"></div>
+    </section>
+
+    <!-- PLANNER -->
+    <section class="view" id="v-planner" hidden>
+      <header>
+        <p class="eyebrow">Lesson Planner</p>
+        <h1>Plan your week of learning.</h1>
+        <p>Reminders appear as a flashing banner at the top and a short buzz on phones that support it. Tick a session when it is done to earn petals.</p>
+      </header>
+      <div class="note" id="sampleNote" hidden>This is an example week so you can see how it works. Edit it, add your own sessions, or clear the examples. <button class="btn small soft" data-a="clearSamples" style="margin-left:6px">Clear examples</button></div>
+      <div class="card" style="margin-top:14px">
+        <div class="row" style="justify-content:space-between;margin-bottom:12px">
+          <h2 style="font-size:1.3rem">Add a session</h2>
+          <div class="row">
+            <button class="btn soft small" data-a="autoPlan">Plan my week for me</button>
+            <button class="btn ghost small" data-a="clearWeek" id="clearWeekBtn">Clear week</button>
+          </div>
+        </div>
+        <div class="pform">
+          <label class="f">Type<select id="pType"><option value="sign">Sign lesson</option><option value="skill">Skill practice</option><option value="rest">Rest and play</option><option value="custom">My own</option></select></label>
+          <label class="f" id="pTopicWrap">Topic<select id="pTopic"></select></label>
+          <label class="f" id="pTitleWrap" hidden>Title<input type="text" id="pTitle" maxlength="40" placeholder="What will you do?"></label>
+          <label class="f">Day<select id="pDay"></select></label>
+          <label class="f">Start<input type="time" id="pTime" value="16:00"></label>
+          <label class="f">Minutes<select id="pMin"><option>15</option><option selected>20</option><option>30</option><option>45</option><option>60</option></select></label>
+          <button class="btn" data-a="addSession">Add</button>
+        </div>
+      </div>
+      <div class="card" style="margin-top:16px;display:grid;gap:6px">
+        <div class="row" style="justify-content:space-between"><h2 style="font-size:1.3rem">This week</h2><span class="muted" id="weekStat"></span></div>
+        <div class="bar" role="progressbar" aria-label="Minutes done this week" id="weekBar" aria-valuemin="0" aria-valuemax="100"><i style="width:0"></i></div>
+      </div>
+      <div class="week" id="week"></div>
+
+      <div class="stitched" style="margin-top:26px">
+        <h2 style="font-size:1.5rem">Lesson prep builder</h2>
+        <p class="muted">Pick a topic and a length. You get a timed lesson outline you can copy, or add straight to your week.</p>
+        <div class="pform" style="margin-top:14px">
+          <label class="f">Topic<select id="prepTopic"></select></label>
+          <label class="f">Length<select id="prepMin"><option value="20">20 minutes</option><option value="30" selected>30 minutes</option><option value="45">45 minutes</option></select></label>
+          <button class="btn" data-a="buildPrep">Build lesson</button>
+        </div>
+        <div id="prepOut" aria-live="polite"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Sign &amp; Bloom keeps your progress on this device. Nothing is sent anywhere.</p>
+    <p>Every lesson is visual first: pictures, text, flashing reminders and big-text display. No sound is ever required.</p>
+  </footer>
+</div>
+
+<div class="sheet" id="sheet" hidden role="dialog" aria-modal="true" aria-label="Details"><div class="panel" id="sheetBody"></div></div>
+<div class="big" id="big" hidden role="dialog" aria-label="Full screen message" data-a="closeBig" tabindex="0"><p id="bigText"></p><small>Tap anywhere to close</small></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+'use strict';
+var $=function(s,r){return (r||document).querySelector(s)};
+var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+var esc=function(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+
+/* ---------- data ---------- */
+var LOCNAMES={forehead:'At the forehead',chin:'At the chin',mouth:'At the mouth',cheek:'At the cheek',chest:'On the chest',face:'In front of the face',space:'In front of you'};
+var MNAME={out:'moves away',in:'moves toward you',down:'moves down',up:'moves up',circle:'circles',twist:'twists',tap:'taps',shake:'shakes',flip:'flips open',swipe:'swipes across',hold:'holds still'};
+var MOT={hello:'out',thanks:'out',please:'circle',sorry:'circle',yes:'tap',no:'tap',help:'up',good:'down',again:'tap',more:'tap',finished:'flip',understand:'up',friend:'flip',love:'in',name:'tap',mother:'tap',father:'tap',eat:'tap',drink:'up',water:'tap',learn:'up',home:'tap',n15:'hold',n6:'hold',n7:'hold',n8:'hold',n9:'hold',n10:'shake'};
+var SIGNS=[
+['hello','Hello','Basics','forehead','Flat hand at your forehead like a relaxed salute. Move it away from your head and out toward the person.','Smile and look at the person.','A friendly salute that greets the whole room.'],
+['thanks','Thank you','Basics','chin','Touch flat fingertips to your chin, then move your hand forward and down toward the person.','Warm, grateful look with a small nod.','You send thanks from your chin straight to them.'],
+['please','Please','Basics','chest','Rest a flat hand on your chest and rub it in a slow circle.','Soft eyebrows and a gentle expression.','Rubbing your heart while asking kindly.'],
+['sorry','Sorry','Basics','chest','Make a fist with the thumb alongside the fingers. Rub it in a circle on your chest.','Eyebrows drawn together, a sincere look.','A fist circling over the heart that truly feels it.'],
+['yes','Yes','Basics','space','Make a fist and bend the wrist up and down a few times, like a head nodding.','Nod your head with it.','Your fist nods just like your head.'],
+['no','No','Basics','space','Tap your index and middle fingers against your thumb, like a small beak snapping shut.','Shake your head slightly.','A tiny beak snaps shut to say no.'],
+['help','Help','Basics','space','Rest a thumbs-up fist on your open palm. Lift both hands up together.','Eyebrows raised, a ready look.','One hand lifts the other up.'],
+['good','Good','Basics','chin','Touch flat fingertips to your chin, then bring that hand down to land in your other open palm.','Pleased, with a gentle smile.','Something good travels from your mouth into your hand.'],
+['again','Again','Basics','space','Curve one hand with the palm up. Swing the other bent hand over so its fingertips land in that palm.','Eyebrows slightly up, as if asking.','The hand curls round and lands once more.'],
+['more','More','Basics','space','Bunch the fingertips of both hands together. Tap them together twice.','Eager, eyebrows up.','Fingertips join up to add a little more.'],
+['finished','Finished','Basics','space','Hold both open hands in front of you, palms facing you. Flip them palms down and out with a quick twist.','A relieved, done look.','Your hands flip away like wiping the slate clean.'],
+['understand','Understand','Basics','forehead','Make a fist near your forehead and flick the index finger up.','A bright, aha look.','A little light switches on at your forehead.'],
+['friend','Friend','People','space','Hook your index fingers together, then switch which one is on top and hook again.','A big, warm smile.','Two index fingers linked like two people arm in arm.'],
+['love','Love','People','chest','Cross both fists over your chest like a hug.','A soft, caring face.','Arms crossed as if hugging something you treasure.'],
+['name','Name','People','space','Make an H with each hand (index and middle fingers together). Tap one across the other twice.','Curious, with eyebrows slightly up if you are asking.','Two H hands tapping like a name tag.'],
+['mother','Mother','People','chin','Open your hand with the fingers spread. Tap the thumb on your chin.','Gentle and kind.','The thumb rests on the soft, gentle spot.'],
+['father','Father','People','forehead','Open your hand with the fingers spread. Tap the thumb on your forehead.','Steady and warm.','The thumb rests on the strong, steady spot.'],
+['eat','Eat','Daily life','mouth','Bunch your fingertips together and tap them to your lips twice.','Happy and hungry.','Food travels to your mouth.'],
+['drink','Drink','Daily life','mouth','Shape your hand as if holding a cup. Tip it toward your mouth.','Relaxed, taking a small sip.','You are holding an invisible cup.'],
+['water','Water','Daily life','chin','Make a W with three fingers. Tap the index finger on your chin twice.','Cool and fresh.','W for water, tapped at the chin.'],
+['learn','Learn','Daily life','forehead','Hold one hand open like a book. Pick up from it with the other hand and bring your closing fingertips to your forehead.','Curious and focused.','You pick knowledge off a page and place it in your head.'],
+['home','Home','Daily life','cheek','Bunch your fingertips together. Touch the corner of your mouth, then your cheek near your ear.','Cozy and content.','Where you eat, then where you sleep.'],
+['n15','One to five','Numbers','space','Hold up that many fingers with your palm facing the person: one finger for one, a full hand for five.','Clear and calm.','Count with your hand, like you always have.'],
+['n6','Six','Numbers','space','Touch your thumb to your little finger. Keep the other three fingers up.','Clear and steady.','Thumb meets pinky, three fingers stand tall.'],
+['n7','Seven','Numbers','space','Touch your thumb to your ring finger. Keep the others up.','Clear and steady.','The thumb moves one finger in from the pinky.'],
+['n8','Eight','Numbers','space','Touch your thumb to your middle finger. Keep the others up.','Clear and steady.','The thumb sits under the middle finger.'],
+['n9','Nine','Numbers','space','Touch your thumb to your index finger. Keep the other three fingers up.','Clear and steady.','Thumb meets the pointer, three fingers up.'],
+['n10','Ten','Numbers','space','Make a fist with the thumb up and shake it slightly.','Bright and sure.','A thumbs-up shake means a full ten.'],
+['happy','Happy','Feelings','chest','Brush both flat hands upward on your chest in small circles, again and again.','Big smile, bright eyes.','Joy rises up from the heart.','up'],
+['sad','Sad','Feelings','face','Hold both open hands in front of your face, fingers spread, and drag them slowly down.','Eyebrows up in the middle, mouth turned down.','The face falls and so do the hands.','down'],
+['angry','Angry','Feelings','face','Curl your fingers like claws in front of your face, then pull them away tensely.','Eyebrows drawn down, a tense look.','Anger claws up from the face.','out'],
+['tired','Tired','Feelings','chest','Rest the fingertips of both bent hands on your upper chest, then let them drop down and in.','Heavy eyelids and a small sigh.','Your energy drops like tired hands.','down'],
+['excited','Excited','Feelings','chest','Brush the middle fingers of both hands up your chest, one then the other, like bubbles rising.','Wide eyes and a big grin.','Fizz bubbles up from the heart.','up'],
+['scared','Scared','Feelings','chest','Hold both claw hands near your chest and shake them as if shivering.','Wide eyes, shoulders pulled in.','The hands shiver just as you do.','shake'],
+['proud','Proud','Feelings','chest','Make a thumbs-up and slide it up the centre of your chest.','Chin up and a happy smile.','Your thumb lifts your chest with pride.','up'],
+['hungry','Hungry','Feelings','chest','Curve your hand into a C and slide it down from your throat to your stomach.','A hopeful, empty-tummy look.','A C-shaped scoop runs down to an empty tummy.','down'],
+['sleep','Sleep','Feelings','face','Spread your fingers in front of your face, then close them as your hand slides down to your chin.','Eyes slowly closing.','The hand shuts like eyes at night.','down'],
+['hurt','Hurt','Feelings','space','Point both index fingers toward each other and twist them back and forth.','A wince, eyebrows drawn together.','Two fingers jab and twist where it hurts.','twist'],
+['apple','Apple','Food','cheek','Make a fist with the index knuckle bent. Press it on your cheek and twist.','Cheerful and crisp.','The knuckle twists on a round cheek.','twist'],
+['milk','Milk','Food','space','Open and close your fist in front of you, as if squeezing something from a cow.','Relaxed.','Squeeze and let go, squeeze and let go.','tap'],
+['bread','Bread','Food','space','Hold one flat hand up. Slice the fingertips of the other hand down its back, like cutting slices.','Hungry and happy.','Slice, slice, one piece at a time.','down'],
+['cookie','Cookie','Food','space','Make a C with one hand and twist it on the open palm of the other, like a cutter in dough.','Delighted.','Cut a round treat out of dough.','twist'],
+['coffee','Coffee','Food','space','Stack two fists and circle the top one over the bottom, like turning a grinder.','Sleepy, then perky.','Grinding beans before the first sip.','circle'],
+['banana','Banana','Food','space','Hold one index finger up and peel down from its tip with the other hand, like opening a fruit.','Playful.','Peel it, one strip at a time.','down'],
+['cat','Cat','Animals','cheek','Pinch your thumb and index finger together at your cheek and pull outward twice.','Soft, sleepy eyes.','Whiskers twitching beside the nose.','out'],
+['dog','Dog','Animals','space','Pat your thigh, then snap your fingers, as if calling a pet to your side.','Cheerful and friendly.','A pat and a snap bring a friend running.','tap'],
+['bird','Bird','Animals','mouth','Pinch your thumb and index finger together at your mouth, then open and close them like a beak.','Bright and chirpy.','A tiny beak chirps near your mouth.','tap'],
+['fish','Fish','Animals','space','Hold one flat hand sideways and wiggle it forward, as if swimming.','Calm and floating.','The hand swims through the air.','out'],
+['horse','Horse','Animals','forehead','Put your thumb at your temple with the first two fingers up. Flap those fingers down twice.','Proud and strong.','Two fingers flick like ears.','tap'],
+['cow','Cow','Animals','forehead','Make a Y with your hand. Put the thumb at your temple and twist.','Calm.','The thumb is a horn on the forehead.','twist'],
+['red','Red','Colours','mouth','Brush your index finger down over your lips twice.','Neutral and clear.','Lips are red, so brush them.','down'],
+['pink','Pink','Colours','mouth','Make a P with your hand (middle finger out) and brush it down your lips.','Soft and sweet.','P for pink, brushing the lips like red.','down'],
+['orange','Orange','Colours','mouth','Squeeze your fist near your mouth, opening and closing it, like squeezing juice.','Fresh and zesty.','Squeeze the fruit and taste the juice.','tap'],
+['yellow','Yellow','Colours','space','Make a Y with your hand (thumb and little finger out) and shake the wrist.','Sunny.','Y for yellow, shaking like sunshine.','shake'],
+['green','Green','Colours','space','Make a G with your hand and shake the wrist.','Fresh.','G for green, rustling like leaves.','shake'],
+['blue','Blue','Colours','space','Make a B with your flat hand held up, and shake the wrist.','Calm.','B for blue, rippling like water.','shake'],
+['black','Black','Colours','forehead','Draw your index finger across your forehead from one side to the other.','Serious.','A dark line across the brow.','swipe'],
+['white','White','Colours','chest','Place your fingertips on your chest and pull them out while closing them together.','Clean and calm.','Pull a clean white shirt out from the chest.','out'],
+['school','School','School and time','space','Clap your open hands together twice, as if calling a class to order.','Attentive.','The clap that starts the lesson.','tap'],
+['teacher','Teacher','School and time','forehead','Push bunched fingertips forward from your temples twice, then slide both flat hands down in front of you to show a person.','Encouraging, with a nod.','Knowledge goes out from the head to a person.','out'],
+['book','Book','School and time','space','Press your open palms together, then open them like the covers of a story.','Curious.','A book opens in your hands.','flip'],
+['write','Write','School and time','space','Pinch an imaginary pen in one hand and draw wiggly lines across your other flat palm.','Focused.','Your palm is the page.','swipe'],
+['read','Read','School and time','space','Point two fingers like eyes at your open palm and move them down it, line by line.','Eyes moving along the page.','Two eyes travel down the page.','down'],
+['now','Now','School and time','space','Hold both bent hands palms up in front of you and drop them down once.','Alert, eyebrows up.','Right here, dropping onto this moment.','down'],
+['tomorrow','Tomorrow','School and time','cheek','Rest your thumb on your cheek and arc the hand forward.','Looking ahead.','The thumb moves toward what is ahead.','out'],
+['yesterday','Yesterday','School and time','cheek','Rest your thumb on your cheek and arc the hand back toward your ear.','Looking back.','The thumb travels back to the past.','in'],
+['morning','Morning','School and time','space','Rest one hand flat on your other forearm like a horizon. Lift the hand up like the sun rising.','Fresh and awake.','The sun rises over your arm.','up'],
+['night','Night','School and time','space','Hold one arm flat in front of you. Curve the other hand over it and drop down, like the sun going under the horizon.','Calm and winding down.','The sun sets behind your arm.','down'],
+['want','Want','Actions','space','Hold both claw hands out, palms up, and pull them toward you.','Eyebrows slightly raised, eager.','You pull it toward you.','in'],
+['go','Go','Actions','space','Point both index fingers up and swing them forward and down.','Ready.','Both hands head off together.','out'],
+['stop','Stop','Actions','space','Chop one flat hand down into your other open palm.','Firm.','A hand like a barrier on the road.','down'],
+['come','Come','Actions','space','Point your index fingers out and curl them toward yourself, beckoning.','Friendly, eyebrows up.','The fingers call someone near.','in'],
+['like','Like','Actions','chest','Place your thumb and middle finger on your chest and pull them out while bringing them together.','Warm smile.','Something pulls your heart outward.','out'],
+['wait','Wait','Actions','space','Hold both hands palms up and wiggle your fingers.','Patient, eyebrows relaxed.','Fingers drum while you hold on.','shake'],
+['play','Play','Actions','space','Make Y hands (thumb and little finger out) and twist your wrists back and forth.','Cheerful.','Y hands wiggle with playful fun.','shake'],
+['flower','Flower','Nature','face','Bunch your fingertips together and touch them under one side of your nose, then the other.','Breathe in softly and smile.','Smell the bloom, left then right.','tap'],
+['grow','Grow','Nature','space','Cup one hand around the bunched fingertips of the other and lift them up through the circle.','Eyes follow the rising hand.','A seed pushes up and opens.','up'],
+['sun','Sun','Nature','forehead','Make a C shape near your eye and lift it up and away.','A little squint and a bright smile.','A circle of light climbs up.','up'],
+['beautiful','Beautiful','Nature','face','Circle your open hand around your face, then close it into bunched fingertips.','Gentle awe and a soft smile.','A hand frames the face, then gathers the beauty.','circle'],
+['rain','Rain','Nature','space','Wiggle your fingers as your hands move down from above, like falling drops.','Eyes up to the sky.','Fingers sprinkle like drops.','down']
+].map(function(a){return {id:a[0],w:a[1],cat:a[2],loc:a[3],how:a[4],face:a[5],hook:a[6],motion:MOT[a[0]]||a[7]||'tap'}});
+var CATS=['Basics','People','Feelings','Daily life','Food','Animals','Colours','School and time','Actions','Nature','Numbers'];
+var ALPHA=['Fist with the thumb resting along the side.','Flat hand upright, fingers together, thumb folded across the palm.','Curve your hand into a C shape.','Index finger up. Other fingers and thumb touch to make a circle.','Fingers bent down onto the thumb.','Thumb and index touch in a circle. Other three fingers up.','Index finger and thumb point sideways, side by side.','Index and middle fingers point sideways together.','Little finger up, the rest in a fist.','Make an I, then draw a J in the air.','Index up, middle finger angled out, thumb touching the middle finger.','Index up and thumb out to make an L.','Thumb tucked under three fingers.','Thumb tucked under two fingers.','All fingertips touch the thumb to make an O.','Like K, but pointing down.','Like G, but pointing down.','Cross your index and middle fingers.','Fist with the thumb across the front of the fingers.','Fist with the thumb tucked between index and middle fingers.','Index and middle fingers up, held together.','Index and middle fingers up, spread apart.','Index, middle and ring fingers up and spread.','Index finger bent like a hook.','Thumb and little finger stretched out.','Draw a Z in the air with your index finger.'];
+
+var STAGES=['Seed','Sprout','Leafy','Budding','Bloom'];
+var SKILLS=[
+{id:'maths',n:'Maths',h:'sky',cost:0,tag:'Numbers you can see, count and touch.',why:'Maths is written, drawn and visual, so nothing depends on hearing. Dots, grids and number signs make ideas concrete.',tips:['Draw a problem as dots, bars or a grid before you use numbers.','Use a visual timer or phone vibration for short practice sprints.'],signs:['n6','n10','more'],q:[['Dot Dash','Win 5 rounds of the Dot Dash game on this page.'],['Times table chart','Draw a 1 to 10 times table grid on paper and colour every multiple of 3.'],['Pattern detective','Find the rule in three number patterns, for example 2, 4, 8, 16.'],['Puzzle maker','Invent a number puzzle and challenge a friend to solve it.']]},
+{id:'crochet',n:'Crochet',h:'rose',cost:40,tag:'Loops, rows and a cozy finished thing.',why:'Crochet is learned by watching hands and reading stitch charts. Close-up videos with captions and written patterns work well.',tips:['Look for tutorials with captions and top-down close-ups of the hook.','Learn the chart symbols. They are a visual language of their own.'],signs:['learn','again','good'],q:[['Slip knot and chain','Make a slip knot and a chain of 20 stitches.'],['Single crochet rows','Work 5 rows of single crochet into your chain.'],['Coaster','Make a flat square or circle coaster.'],['Gift it','Turn your work into a small gift, like a bookmark or keyring.']]},
+{id:'drawing',n:'Drawing',h:'butter',cost:50,tag:'A language that needs no sound.',why:'Drawing speaks without words and can be shared with anyone. Observation skills grow quickly with a little practice each day.',tips:['Draw what you see for ten minutes every day.','Join image-first art communities where work is shared as pictures.'],signs:['good','learn','finished'],q:[['Lines and shapes','Fill a page with straight, curved and wavy lines.'],['Light and shadow','Shade a ball so it looks round.'],['Draw your hand','Draw your own hand in three different signs.'],['Tell a story','Draw a four-panel comic about your day.']]},
+{id:'coding',n:'Coding',h:'sky',cost:90,tag:'Type it, see it, change it.',why:'Code is written, so you learn and work through text and what appears on screen. There is a huge online community and plenty of remote work.',tips:['Choose tutorials with written steps. Read error messages like clues.','Change one small thing at a time and watch the result.'],signs:['learn','help','understand'],q:[['Hello page','Build a web page that shows your name in big text.'],['Colour it','Change the colours and fonts with CSS.'],['Make a button','Add a button that changes something when you click it.'],['Share it','Publish your page and show someone.']]},
+{id:'baking',n:'Baking',h:'butter',cost:70,tag:'Measure, mix, watch, enjoy.',why:'Baking runs on clear visual steps. Timers can flash or vibrate instead of ringing, and doneness shows in colour and touch.',tips:['Use a phone timer that flashes or vibrates.','Check doneness by colour and touch, not by sound.'],signs:['eat','good','more'],q:[['Measure and mix','Make a simple dough or batter, measuring carefully.'],['Bake by eye','Bake a batch of cookies and note when they turn golden.'],['Decorate','Ice or decorate your bakes with a pattern.'],['Share','Share them with someone and sign eat and good together.']]},
+{id:'origami',n:'Origami',h:'rose',cost:50,tag:'Paper, folds and tiny wonders.',why:'Paper folding is taught through diagrams. Every step is a picture, so instructions are clear without a single word.',tips:['Follow diagram-only tutorials. The arrow symbols are universal.','Crease slowly and check each fold before the next.'],signs:['again','finished','good'],q:[['Paper boat','Fold a boat that floats in a bowl of water.'],['Jumping frog','Fold a frog that jumps when you press its back.'],['Crane','Fold a paper crane.'],['Mobile','Hang five of your folds on a string as a mobile.']]},
+{id:'photo',n:'Photography',h:'sage',cost:30,tag:'Tell stories with light and colour.',why:'Photos tell stories without words. Framing, light and colour are all things you notice with your eyes.',tips:['Walk a short route and look for one shape or colour to photograph.','Share your work in image-first communities.'],signs:['good','friend','learn'],q:[['Rule of thirds','Take 5 photos with the subject off-centre.'],['Find the light','Photograph one object in morning and evening light.'],['Tiny details','Photograph 3 small details people usually miss.'],['Photo story','Tell a story in 6 photos.']]},
+{id:'garden',n:'Gardening',h:'sage',cost:70,tag:'Patience you can watch grow.',why:'Plants reward you with something you can see and touch every day. Growth is a quiet, visual reward.',tips:['Check soil by touch and leaves by colour.','Keep a growth photo diary.'],signs:['water','more','home'],q:[['Sprout a seed','Sprout beans on damp tissue in a clear cup.'],['Pot it','Move your sprout into soil.'],['Water routine','Water on a schedule for 7 days, using a visual reminder.'],['Enjoy it','Harvest, pick a flower or share a cutting.']]},
+{id:'writing',n:'Writing',h:'butter',cost:60,tag:'Your words, on the page.',why:'Writing strengthens the written language of the hearing world. It helps in daily life, study and work.',tips:['Write three lines every day about something you noticed.','Read short stories to collect phrases you can reuse.'],signs:['name','friend','learn'],q:[['Three lines a day','Write three lines a day for three days.'],['Describe a picture','Pick a photo and describe it in five sentences.'],['Short story','Write ten sentences with a beginning, middle and end.'],['Share it','Show your story to a friend or teacher.']]},
+{id:'chess',n:'Chess',h:'sky',cost:80,tag:'A silent game played on equal terms.',why:'Chess is visual and silent, and the same everywhere in the world. You can play with no talking at all.',tips:['Learn from diagram books and annotated boards.','Play online with chat turned off or in writing.'],signs:['friend','again','good'],q:[['Meet the pieces','Set up the board and show how each piece moves.'],['Mate in one','Solve 5 simple checkmate-in-one puzzles.'],['Control the centre','Play 3 games trying to hold the centre squares.'],['Teach a friend','Teach someone the basic moves.']]}
+];
+var SK={};SKILLS.forEach(function(k){SK[k.id]=k});
+var TALENT=[
+['What feels best after a long day?',['Making something with my hands',['crochet','origami','baking']],['Solving a puzzle',['maths','chess','coding']],['Drawing or taking pictures',['drawing','photo']],['Being near plants',['garden','photo','writing']]],
+['Pick a mood',['Cozy and slow',['crochet','writing','baking']],['Sharp and focused',['chess','coding','maths']],['Curious and exploring',['photo','garden','origami']],['Creative and messy',['drawing','baking','origami']]],
+['How do you like instructions?',['Step by step pictures',['origami','crochet','drawing']],['Written steps',['coding','writing','maths']],['Try it and see',['garden','baking','photo']],['Rules and strategy',['chess','maths','coding']]],
+['What would you proudly share?',['A finished object',['crochet','origami','baking']],['A clever solution',['coding','maths','chess']],['A picture',['drawing','photo']],['A story',['writing','garden']]]
+];
+var BOARDS=[
+['Say hello',['Hello','Good morning','Good evening','Thank you','Please','Sorry','Excuse me','Yes','No']],
+['About me',['I am deaf.','I cannot hear you.','I cannot speak, so I will type or write.','Please look at me when you talk.','Please speak slowly.','Please write it down.','Can you type it on your phone?']],
+['Out and about',['How much is this?','Where is the bus stop?','Where is the restroom?','Can you show me on the map?','Please repeat that.','I need water.','I am hungry.','I need a seat.']],
+['Need help',['I need help.','Please call my family.','Please call a doctor.','I am in pain here.','Please call an ambulance.','I am lost.']]
+];
+var LEVELS=[[0,'Seedling'],[100,'Sprout'],[250,'Bud'],[500,'Blossom'],[900,'Full bloom']];
+var DN=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+var DNL=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+var VIEWS=['home','signs','talk','garden','planner'];
+var SIGNTOPICS=['Basics','People','Feelings','Daily life','Food','Animals','Colours','School and time','Actions','Nature','Numbers','Fingerspelling'];
+
+/* ---------- state ---------- */
+var KEY='sign-and-bloom-v1';
+function ymd(d){d=d||new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function yesterday(){var d=new Date();d.setDate(d.getDate()-1);return ymd(d)}
+function uid(){return 's'+Date.now().toString(36)+Math.floor(Math.random()*1e4).toString(36)}
+function sampleSessions(){return [
+ {id:uid()+'a',day:0,time:'16:00',min:20,type:'sign',title:'Signs: Basics',done:false,sample:true},
+ {id:uid()+'b',day:1,time:'16:00',min:25,type:'skill',title:'Maths practice',done:false,sample:true},
+ {id:uid()+'c',day:2,time:'17:00',min:20,type:'sign',title:'Signs: Daily life',done:false,sample:true},
+ {id:uid()+'d',day:3,time:'16:00',min:25,type:'skill',title:'Maths practice',done:false,sample:true},
+ {id:uid()+'e',day:4,time:'15:30',min:15,type:'sign',title:'Signs: Fingerspelling',done:false,sample:true},
+ {id:uid()+'f',day:6,time:'11:00',min:30,type:'rest',title:'Stretch and breathe',done:false,sample:true}]}
+function fresh(){return {stitches:30,lifetime:0,streak:0,lastDay:'',learned:{},alpha:false,skills:{maths:{on:true,done:[false,false,false,false]}},awarded:{},dots:0,sessions:sampleSessions(),sampleOn:true,custom:[],scale:1,theme:'',quizBest:0,strip:[]}}
+var S=(function(){try{var r=localStorage.getItem(KEY);if(r){return Object.assign(fresh(),JSON.parse(r))}}catch(e){}return fresh()})();
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function touch(){var t=ymd();if(S.lastDay!==t){S.streak=(S.lastDay===yesterday())?S.streak+1:1;S.lastDay=t}}
+function streakNow(){return (S.lastDay===ymd()||S.lastDay===yesterday())?S.streak:0}
+function earn(n,msg){S.stitches+=n;S.lifetime+=n;touch();save();paintHeader();toast('+'+n+' petals'+(msg?'  '+msg:''))}
+function levelInfo(){var i=0;for(var k=0;k<LEVELS.length;k++){if(S.lifetime>=LEVELS[k][0])i=k}var nx=LEVELS[i+1];return {name:LEVELS[i][1],next:nx,pct:nx?Math.round((S.lifetime-LEVELS[i][0])/(nx[0]-LEVELS[i][0])*100):100}}
+var toastT;function toast(m){var t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(function(){t.classList.remove('show')},2400)}
+function paintHeader(){$('#hStitch').textContent=S.stitches;$('#hLevel').textContent=levelInfo().name;if(cur==='home')renderHomeStats()}
+function learnedCount(){return Object.keys(S.learned).length}
+function unlockedCount(){return SKILLS.filter(function(k){return S.skills[k.id]&&S.skills[k.id].on}).length}
+
+/* ---------- drawings ---------- */
+var RM=!!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);
+var MPATH={
+ out:function(x,y){return 'M'+x+' '+y+'L'+(x+24)+' '+(y+8)},
+ in:function(x,y){return 'M'+(x+24)+' '+(y+8)+'L'+x+' '+y},
+ down:function(x,y){return 'M'+x+' '+y+'L'+x+' '+(y+16)},
+ up:function(x,y){return 'M'+x+' '+(y+16)+'L'+x+' '+y},
+ circle:function(x,y){return 'M'+(x-9)+' '+y+'a9 9 0 1 0 18 0a9 9 0 1 0 -18 0'},
+ twist:function(x,y){return 'M'+(x-5)+' '+y+'a5 5 0 1 0 10 0a5 5 0 1 0 -10 0'},
+ tap:function(x,y){return 'M'+x+' '+y+'l0 -7l0 7l0 -7l0 7'},
+ shake:function(x,y){return 'M'+(x-8)+' '+y+'L'+(x+8)+' '+y+'L'+(x-8)+' '+y+'L'+(x+8)+' '+y},
+ flip:function(x,y){return 'M'+(x-10)+' '+y+'L'+(x+10)+' '+y},
+ swipe:function(x,y){return 'M'+(x-16)+' '+y+'L'+(x+16)+' '+y}
+};
+function locSvg(loc,motion){
+  var P={forehead:[60,22],chin:[60,68],mouth:[60,56],cheek:[84,50],chest:[60,118],face:[60,44],space:[60,128]};
+  var p=P[loc]||P.space;
+  var s='<svg class="loc" viewBox="0 0 120 150" role="img" aria-label="'+LOCNAMES[loc]+'">';
+  s+='<path d="M6 150c2-24 20-38 54-38s52 14 54 38z" fill="var(--surface-2)"/>';
+  s+='<rect x="50" y="62" width="20" height="54" rx="9" fill="var(--surface-2)"/>';
+  s+='<circle cx="60" cy="42" r="28" fill="var(--surface-2)" stroke="var(--stitch)" stroke-width="2" stroke-dasharray="4 4"/>';
+  s+='<circle cx="49" cy="40" r="2.6" fill="var(--ink-soft)"/><circle cx="71" cy="40" r="2.6" fill="var(--ink-soft)"/>';
+  s+='<path d="M52 52q8 7 16 0" stroke="var(--ink-soft)" stroke-width="2" fill="none" stroke-linecap="round"/>';
+  if(loc==='space')s+='<ellipse cx="60" cy="128" rx="46" ry="18" fill="none" stroke="var(--rose)" stroke-width="2" stroke-dasharray="4 5"/>';
+  s+='<circle class="ping" cx="'+p[0]+'" cy="'+p[1]+'" r="9" fill="var(--rose)" opacity=".35"/>';
+  var mp=MPATH[motion];
+  if(mp){
+    var d=mp(p[0],p[1]);
+    s+='<path d="'+d+'" fill="none" stroke="var(--rose)" stroke-width="2" stroke-dasharray="3 4" stroke-linecap="round" opacity=".6"/>';
+    if(RM)s+='<circle cx="'+p[0]+'" cy="'+p[1]+'" r="5.5" fill="var(--rose)"/>';
+    else s+='<circle r="5.5" fill="var(--rose)"><animateMotion dur="2.2s" repeatCount="indefinite" path="'+d+'"/></circle>';
+  }else{s+='<circle cx="'+p[0]+'" cy="'+p[1]+'" r="5.5" fill="var(--rose)"/>'}
+  return s+'</svg>';
+}
+function plant(l,locked){
+  var H=[0,16,30,42,48],C=[0,2,4,6,6],h=H[l],cy=74-h;
+  var s='<svg viewBox="0 0 100 110" role="img" aria-label="'+(locked?'Locked skill':'Plant at stage '+(l+1)+' of 5')+'">';
+  if(l>0){s+='<path d="M50 74V'+cy+'" stroke="var(--leaf)" stroke-width="3.2" stroke-linecap="round" fill="none"/>';
+    for(var i=0;i<C[l];i++){var y=74-h*(i+1)/(C[l]+1),side=i%2?1:-1,x=50+side*8;
+      s+='<ellipse cx="'+x+'" cy="'+y.toFixed(1)+'" rx="8" ry="3.6" fill="var(--leaf)" transform="rotate('+(-side*25)+' '+x+' '+y.toFixed(1)+')"/>'}
+    if(l===3)s+='<circle cx="50" cy="'+(cy-3)+'" r="5" fill="var(--h)"/>';
+    if(l===4){for(var a=0;a<360;a+=60)s+='<ellipse cx="50" cy="'+(cy-9)+'" rx="5.5" ry="9" fill="var(--h)" transform="rotate('+a+' 50 '+cy+')"/>';s+='<circle cx="50" cy="'+cy+'" r="5.5" fill="var(--surface)"/>'}
+  }else{s+='<ellipse cx="50" cy="71" rx="4.5" ry="3" fill="var(--ink-soft)"/>'}
+  s+='<ellipse cx="50" cy="75" rx="22" ry="3.5" fill="var(--soil)"/>';
+  s+='<path d="M28 80h44l-5 26H33z" fill="var(--h)"/><rect x="25" y="74" width="50" height="9" rx="4.5" fill="var(--h)"/>';
+  if(locked)s+='<rect x="42" y="88" width="16" height="13" rx="3" fill="var(--on-h)"/><path d="M45 88v-3a5 5 0 0 1 10 0v3" stroke="var(--on-h)" stroke-width="2.4" fill="none"/>';
+  return s+'</svg>';
+}
+
+/* ---------- routing ---------- */
+var cur='home';
+function route(){
+  var h=location.hash.slice(1);cur=VIEWS.indexOf(h)>-1?h:'home';
+  VIEWS.forEach(function(v){$('#v-'+v).hidden=v!==cur});
+  $$('#tabs a').forEach(function(a){if(a.getAttribute('href')==='#'+cur)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')});
+  window.scrollTo(0,0);
+  if(cur==='home')renderHome();
+  if(cur==='signs')renderSigns();
+  if(cur==='talk')renderTalk();
+  if(cur==='garden')renderGarden();
+  if(cur==='planner')renderPlanner();
+}
+function go(v){if(location.hash==='#'+v)route();else location.hash=v}
+
+/* ---------- home ---------- */
+function dailySign(){var d=new Date();var n=d.getFullYear()*372+d.getMonth()*31+d.getDate();var pool=SIGNS.filter(function(s){return s.id!=='n15'});return pool[n%pool.length]}
+function renderHome(){
+  var hr=new Date().getHours();var g=hr<12?'Good morning':hr<18?'Good afternoon':'Good evening';
+  var ns=$('#nSigns');if(ns)ns.textContent=SIGNS.length;
+  var d=dailySign(),got=!!S.learned[d.id];
+  $('#homeDaily').innerHTML='<p class="eyebrow">Sign of the day</p><div class="daily" style="margin-top:10px">'+locSvg(d.loc,d.motion)+'<div style="display:grid;gap:6px"><h2 style="font-size:1.9rem">'+d.w+'</h2><span class="pill">'+LOCNAMES[d.loc]+'</span></div></div><p style="margin-top:12px">'+d.how+'</p><p class="muted" style="margin-top:6px;font-size:.92rem">Face: '+d.face+'</p><div class="row" style="margin-top:14px"><button class="btn small'+(got?' soft':'')+'" data-a="learn" data-id="'+d.id+'">'+(got?'Learned. Undo':'I can sign this')+'</button><button class="btn small ghost" data-a="findSign" data-id="'+d.id+'">Open in Sign Lab</button></div><div class="row" style="margin-top:8px">'+vidRow(d.w)+'</div>';
+  renderHomeStats();renderHomePlan();
+}
+function renderHomeStats(){
+  var lv=levelInfo();
+  $('#homeStats').innerHTML=
+   '<div class="stat h-rose"><b>'+S.stitches+'</b><span>Petals to spend</span></div>'+
+   '<div class="stat h-butter"><b>'+streakNow()+'</b><span>Day streak</span></div>'+
+   '<div class="stat h-sage"><b>'+learnedCount()+'<small style="font-size:1rem">/'+SIGNS.length+'</small></b><span>Signs learned</span></div>'+
+   '<div class="stat h-sky"><b>'+unlockedCount()+'<small style="font-size:1rem">/'+SKILLS.length+'</small></b><span>Skills unlocked</span></div>';
+  var el=$('#homePlan');if(el&&el.dataset.lv!==String(lv.pct)){el.dataset.lv=lv.pct}
+}
+function todayIdx(){return (new Date().getDay()+6)%7}
+function renderHomePlan(){
+  var lv=levelInfo();var list=S.sessions.filter(function(s){return s.day===todayIdx()}).sort(function(a,b){return a.time<b.time?-1:1});
+  var h='<h2 style="font-size:1.45rem">Today, '+DNL[todayIdx()]+'</h2>';
+  if(!list.length)h+='<p class="muted" style="margin-top:8px">Nothing planned for today. Add a session or let Sign &amp; Bloom plan your week.</p><div class="row" style="margin-top:12px"><a class="btn small" href="#planner">Open planner</a></div>';
+  else h+='<ul class="day" style="list-style:none;padding:0;margin:10px 0 0;background:transparent">'+list.map(sessHtml).join('')+'</ul>';
+  h+='<div class="lv"><div class="row" style="justify-content:space-between"><b style="font-family:var(--font-display)">'+lv.name+'</b><span class="muted" style="font-size:.88rem">'+(lv.next?(lv.next[0]-S.lifetime)+' petals to '+lv.next[1]:'Top level reached')+'</span></div><div class="bar" role="progressbar" aria-label="Progress to next level" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+lv.pct+'"><i style="width:'+lv.pct+'%"></i></div></div>';
+  $('#homePlan').innerHTML=h;
+}
+function buildTalent(){
+  $('#talentQs').innerHTML=TALENT.map(function(q,i){return '<fieldset><legend>'+q[0]+'</legend><div class="row">'+q.slice(1).map(function(o,j){return '<label class="opt"><input type="radio" name="q'+i+'" value="'+j+'"><span>'+o[0]+'</span></label>'}).join('')+'</div></fieldset>'}).join('');
+}
+function runTalent(){
+  var sc={},answered=0;
+  TALENT.forEach(function(q,i){var c=$('input[name="q'+i+'"]:checked');if(c){answered++;q[+c.value+1][1].forEach(function(id){sc[id]=(sc[id]||0)+1})}});
+  var out=$('#talentOut');
+  if(answered<4){out.innerHTML='<p class="muted">Answer all four to see your skills.</p>';return}
+  var order=SKILLS.map(function(k){return k.id}),top=order.sort(function(a,b){return (sc[b]||0)-(sc[a]||0)}).slice(0,2);
+  out.innerHTML=top.map(function(id){var k=SK[id];return '<div class="card h-'+k.h+'" style="display:grid;gap:8px"><span class="pill" style="justify-self:start">Try this first</span><h3 style="font-size:1.35rem">'+k.n+'</h3><p class="muted">'+k.tag+'</p><button class="btn small h" data-a="openSkillGo" data-id="'+id+'">See it in the garden</button></div>'}).join('');
+}
+
+/* ---------- signs ---------- */
+var signFilter='All',signTab='cards';
+function renderSigns(){
+  var cats=['All'].concat(CATS).concat(['Learned']);
+  $('#signChips').innerHTML=cats.map(function(c){return '<button data-a="signFilter" data-v="'+c+'" aria-pressed="'+(signFilter===c)+'">'+c+'</button>'}).join('');
+  renderSignGrid();renderSpell();renderAlpha();renderQuiz();renderVideos();
+  $$('[data-a="signTab"]').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.v===signTab)});
+  $('#p-cards').hidden=signTab!=='cards';$('#p-quiz').hidden=signTab!=='quiz';$('#p-spell').hidden=signTab!=='spell';$('#p-videos').hidden=signTab!=='videos';
+}
+function ytq(q){return 'https://www.youtube.com/results?search_query='+encodeURIComponent(q)}
+function vidRow(w){return '<div class="vids"><a class="btn small ghost" href="'+ytq('ASL sign for '+w)+'" target="_blank" rel="noopener">Watch in ASL</a><a class="btn small ghost" href="'+ytq('Indian Sign Language sign for '+w)+'" target="_blank" rel="noopener">Watch in ISL</a></div>'}
+var SOURCES=[
+ ['Indian Sign Language dictionary','https://indiansignlanguage.org','Video dictionary of Indian Sign Language from the national ISL research and training centre.'],
+ ['ISLRTC','https://islrtc.nic.in','The Indian Sign Language Research and Training Centre. Courses, news and resources.'],
+ ['SpreadTheSign','https://www.spreadthesign.com','Look up a word and compare how it is signed in many countries, including India.'],
+ ['Handspeak','https://www.handspeak.com','American Sign Language dictionary with short clips and notes.'],
+ ['Lifeprint','https://www.lifeprint.com','Free American Sign Language lessons and a sign dictionary.']
+];
+function renderVideos(){
+  var i=$('#vidIn');if(!i)return;
+  var w=i.value.trim()||'Hello';
+  $('#vidAsl').href=ytq('ASL sign for '+w);$('#vidIsl').href=ytq('Indian Sign Language sign for '+w);
+  var l=$('#vidLinks');if(!l.firstChild)l.innerHTML=SOURCES.map(function(s){return '<article class="card vsrc"><a class="t" href="'+s[1]+'" target="_blank" rel="noopener">'+s[0]+'</a><p class="muted" style="font-size:.93rem">'+s[2]+'</p></article>'}).join('');
+}
+function makePetals(){
+  var c=$('#petals');if(!c)return;var cols=['var(--rose)','var(--butter)','var(--sky)','var(--sage)'],h='';
+  for(var i=0;i<16;i++){
+    h+='<i style="left:'+Math.round(Math.random()*96)+'%;top:'+Math.round(Math.random()*90)+'%;--w:'+(10+Math.round(Math.random()*12))+'px;--r:'+Math.round(Math.random()*360)+'deg;--c:'+cols[i%4]+';--d:'+(7+Math.round(Math.random()*6))+'s;--dl:-'+Math.round(Math.random()*8)+'s"></i>';
+  }
+  c.innerHTML=h;
+}
+function renderSignGrid(){
+  var q=$('#signSearch').value.trim().toLowerCase();
+  var list=SIGNS.filter(function(s){
+    if(signFilter==='Learned'&&!S.learned[s.id])return false;
+    if(signFilter!=='All'&&signFilter!=='Learned'&&s.cat!==signFilter)return false;
+    return !q||s.w.toLowerCase().indexOf(q)>-1||s.cat.toLowerCase().indexOf(q)>-1});
+  $('#signGrid').innerHTML=list.length?list.map(function(s){var got=!!S.learned[s.id];
+    return '<article class="card sign">'+'<div class="l">'+locSvg(s.loc,s.motion)+'</div><div><h3>'+s.w+'</h3><span class="pill">'+s.cat+'</span></div><p class="muted" style="font-size:.88rem;align-self:start">'+LOCNAMES[s.loc]+'. Hand '+MNAME[s.motion]+'.</p>'+
+     '<p class="how">'+s.how+'</p><p class="face">Face: '+s.face+'</p><p class="hook">'+s.hook+'</p>'+vidRow(s.w)+
+     '<button class="btn small learned'+(got?' soft':'')+'" data-a="learn" data-id="'+s.id+'" aria-pressed="'+got+'">'+(got?'Learned. Tap to undo':'I can sign this (+10)')+'</button></article>'}).join(''):'<p class="muted">No signs match. Try another word or filter.</p>';
+}
+function renderSpell(){
+  var w=($('#spellIn').value||'').toUpperCase().replace(/[^A-Z]/g,'');
+  $('#spellOut').innerHTML=w?w.split('').map(function(c,i){return '<div class="tile hit"><span class="big">'+c+'</span><p>'+ALPHA[c.charCodeAt(0)-65]+'</p></div>'}).join(''):'<p class="muted">Type letters above to see each handshape.</p>';
+  var b=$('#alphaBtn');b.textContent=S.alpha?'Alphabet learned. Tap to undo':'I know the whole alphabet (+20)';b.className='btn '+(S.alpha?'soft':'');
+  if(!S.alpha)b.classList.add('soft');
+}
+function renderAlpha(){
+  $('#alphaGrid').innerHTML=ALPHA.map(function(d,i){return '<div class="tile"><span class="big">'+String.fromCharCode(65+i)+'</span><p>'+d+'</p></div>'}).join('');
+}
+var quiz=null;
+function startQuiz(){
+  var pool=shuffle(SIGNS.filter(function(s){return s.id!=='n15'})).slice(0,5);
+  quiz={i:0,score:0,qs:pool.map(function(s){var d=shuffle(SIGNS.filter(function(x){return x.id!==s.id&&x.id!=='n15'})).slice(0,3);return {s:s,opts:shuffle([s].concat(d))}}),ans:null};
+  renderQuiz();
+}
+function renderQuiz(){
+  var b=$('#quizBox');if(!b)return;
+  if(!quiz){b.innerHTML='<h2 style="font-size:1.4rem">Which sign is it?</h2><p class="muted" style="margin:6px 0 14px">Read how the sign is made and pick the word. Five questions, +5 petals for each right answer.'+(S.quizBest?' Your best: '+S.quizBest+' of 5.':'')+'</p><button class="btn" data-a="startQuiz">Start quiz</button>';return}
+  if(quiz.i>=quiz.qs.length){
+    if(quiz.score>S.quizBest){S.quizBest=quiz.score;save()}
+    b.innerHTML='<h2 style="font-size:1.6rem">'+quiz.score+' of '+quiz.qs.length+' right</h2><p class="muted" style="margin:6px 0 14px">'+(quiz.score>=4?'Great hands. Try the Sign cards to learn the rest.':'Look at the cards for the ones you missed, then try again.')+'</p><div class="row"><button class="btn" data-a="startQuiz">Play again</button><button class="btn soft" data-a="signTab" data-v="cards">Back to cards</button></div>';return}
+  var q=quiz.qs[quiz.i];
+  b.innerHTML='<div class="row" style="justify-content:space-between"><span class="pill">Question '+(quiz.i+1)+' of '+quiz.qs.length+'</span><span class="muted">Score '+quiz.score+'</span></div>'+
+   '<div class="qbox" style="margin-top:14px">'+locSvg(q.s.loc,q.s.motion)+'<div><p class="muted" style="font-size:.9rem">'+LOCNAMES[q.s.loc]+'</p><p style="font-size:1.12rem">'+q.s.how+'</p></div></div>'+
+   '<div class="opts">'+q.opts.map(function(o){var cls='ans';if(quiz.ans){if(o.id===q.s.id)cls+=' ok';else if(o.id===quiz.ans)cls+=' bad'}return '<button class="'+cls+'" data-a="answer" data-id="'+o.id+'"'+(quiz.ans?' disabled':'')+'>'+o.w+'</button>'}).join('')+'</div>'+
+   (quiz.ans?'<p style="margin-top:14px">'+(quiz.ans===q.s.id?'Yes! ':'Not quite. It was <b>'+q.s.w+'</b>. ')+'<span class="hook" style="font-size:1.25rem">'+q.s.hook+'</span></p><button class="btn" style="margin-top:12px" data-a="nextQ">'+(quiz.i+1<quiz.qs.length?'Next':'See score')+'</button>':'');
+}
+
+/* ---------- talk ---------- */
+/* ---------- calm music and gentle voice ---------- */
+var AC=null,mus={on:false,t1:0,t2:0,ci:0,duck:false,master:null,bus:null};
+var CHORDS=[[130.81,196.00,246.94,329.63],[110.00,164.81,196.00,261.63],[87.31,130.81,220.00,261.63],[98.00,146.83,196.00,246.94]];
+var BELLS=[523.25,587.33,659.25,783.99,880.00,1046.50];
+function impulse(ctx,sec,decay){var len=Math.floor(ctx.sampleRate*sec),b=ctx.createBuffer(2,len,ctx.sampleRate);for(var c=0;c<2;c++){var d=b.getChannelData(c);for(var i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,decay)}return b}
+function musicTarget(){var v=(S.musicVol==null?40:S.musicVol)/100*.4;return mus.duck?v*.35:v}
+function setMusicGain(tc){if(AC&&mus.master)mus.master.gain.setTargetAtTime(mus.on?musicTarget():0,AC.currentTime,tc)}
+function playChord(){
+  if(!mus.on||!AC)return;
+  var notes=CHORDS[mus.ci%CHORDS.length],t=AC.currentTime;mus.ci++;
+  notes.forEach(function(fr,i){
+    [['sine',.05,0],['triangle',.018,6]].forEach(function(v){
+      var o=AC.createOscillator(),g=AC.createGain();o.type=v[0];o.frequency.value=fr;o.detune.value=v[2]+(i%2?3:-3);
+      g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v[1],t+3);g.gain.linearRampToValueAtTime(v[1]*.8,t+6.5);g.gain.linearRampToValueAtTime(0,t+10.5);
+      o.connect(g);g.connect(mus.bus);o.start(t);o.stop(t+11);
+    });
+  });
+  mus.t1=setTimeout(playChord,8000);
+}
+function playBell(){
+  if(!mus.on||!AC)return;
+  var fr=BELLS[Math.floor(Math.random()*BELLS.length)],t=AC.currentTime,o=AC.createOscillator(),g=AC.createGain();
+  o.type='sine';o.frequency.value=fr;
+  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.05,t+.03);g.gain.exponentialRampToValueAtTime(.0001,t+4.5);
+  o.connect(g);g.connect(mus.bus);o.start(t);o.stop(t+4.6);
+  mus.t2=setTimeout(playBell,2600+Math.random()*4800);
+}
+function musicStart(){
+  var Ctx=window.AudioContext||window.webkitAudioContext;
+  if(!Ctx){toast('Music is not available on this device');return}
+  try{
+    if(!AC){
+      AC=new Ctx();
+      mus.master=AC.createGain();mus.master.gain.value=0;
+      var lp=AC.createBiquadFilter();lp.type='lowpass';lp.frequency.value=1400;lp.Q.value=.3;
+      var conv=AC.createConvolver();conv.buffer=impulse(AC,3.5,2.2);
+      var wet=AC.createGain();wet.gain.value=.55;var dry=AC.createGain();dry.gain.value=.6;
+      mus.bus=AC.createGain();
+      mus.bus.connect(lp);lp.connect(dry);lp.connect(conv);conv.connect(wet);dry.connect(mus.master);wet.connect(mus.master);mus.master.connect(AC.destination);
+    }
+    AC.resume();
+  }catch(e){toast('Music is not available on this device');return}
+  mus.on=true;setMusicGain(2);playChord();mus.t2=setTimeout(playBell,2500);
+  toast('Calm music is playing. Tap again to pause.');
+}
+function musicStop(){
+  mus.on=false;clearTimeout(mus.t1);clearTimeout(mus.t2);setMusicGain(.5);
+  setTimeout(function(){if(!mus.on&&AC&&AC.state==='running')AC.suspend()},2600);
+}
+function toggleMusic(){if(mus.on)musicStop();else musicStart();paintMusic()}
+function paintMusic(){
+  var b=$('#musicBtn'),t=$('#musicTop');
+  if(b){b.textContent=mus.on?'Pause calm music':'Play calm music';b.setAttribute('aria-pressed',String(mus.on))}
+  if(t){t.setAttribute('aria-pressed',String(mus.on));t.setAttribute('aria-label',mus.on?'Pause calm music':'Play calm music')}
+}
+var VM={gentle:{r:.8,p:.95,v:.75},soft:{r:.7,p:.9,v:.55},normal:{r:1,p:1,v:1}};
+function enVoices(){try{return (speechSynthesis.getVoices()||[]).filter(function(x){return /^en/i.test(x.lang)})}catch(e){return []}}
+function bestVoice(v){
+  var pref=/(female|samantha|karen|moira|tessa|veena|heera|zira|serena|fiona|natural|neural)/i,sc=-1,b=v[0];
+  v.forEach(function(x){var s=0;if(pref.test(x.name))s+=3;if(/en[-_]IN/i.test(x.lang))s+=2;if(/en[-_](GB|AU)/i.test(x.lang))s+=1;if(s>sc){sc=s;b=x}});
+  return b;
+}
+function fillVoices(){
+  var sel=$('#voiceSel');if(!sel)return;var v=enVoices();
+  if(!v.length){sel.innerHTML='<option value="">Device default voice</option>';return}
+  var cur=S.voiceName||bestVoice(v).name;
+  sel.innerHTML=v.map(function(x){return '<option value="'+esc(x.name)+'"'+(x.name===cur?' selected':'')+'>'+esc(x.name)+' ('+esc(x.lang)+')</option>'}).join('');
+}
+function duck(on){mus.duck=on;setMusicGain(.4)}
+function sayText(t,errMsg){
+  try{
+    var u=new SpeechSynthesisUtterance(t),m=VM[S.voiceMode||'gentle']||VM.gentle,vs=enVoices();
+    u.rate=m.r;u.pitch=m.p;u.volume=m.v;
+    var pick=vs.filter(function(x){return x.name===S.voiceName})[0]||(vs.length?bestVoice(vs):null);
+    if(pick){u.voice=pick;u.lang=pick.lang}
+    u.onstart=function(){duck(true)};u.onend=u.onerror=function(){duck(false)};
+    speechSynthesis.cancel();speechSynthesis.speak(u);
+  }catch(e){toast(errMsg||'Speech is not available here.')}
+}
+function initCalm(){
+  var vol=$('#musicVol'),mode=$('#voiceMode'),sel=$('#voiceSel');
+  vol.value=S.musicVol==null?40:S.musicVol;mode.value=S.voiceMode||'gentle';
+  vol.addEventListener('input',function(){S.musicVol=+vol.value;save();setMusicGain(.2)});
+  mode.addEventListener('change',function(){S.voiceMode=mode.value;save()});
+  sel.addEventListener('change',function(){S.voiceName=sel.value;save()});
+  fillVoices();
+  try{speechSynthesis.onvoiceschanged=fillVoices}catch(e){}
+  document.addEventListener('visibilitychange',function(){if(!AC||!mus.on)return;if(document.hidden)AC.suspend();else AC.resume()});
+}
+function renderTalk(){
+  $('#strip').innerHTML=S.strip.length?S.strip.map(function(t,i){return '<button class="bubble sel" data-a="stripRm" data-i="'+i+'" aria-label="Remove '+esc(t)+'">'+esc(t)+'</button>'}).join(''):'<span class="ph">Tap phrases below to build your sentence.</span>';
+  var h=BOARDS.map(function(b){return '<section><h3>'+b[0]+'</h3><div class="chips">'+b[1].map(function(t){return '<button class="bubble" data-a="phrase" data-t="'+esc(t)+'">'+esc(t)+'</button>'}).join('')+'</div></section>'}).join('');
+  if(S.custom.length)h+='<section><h3>My phrases</h3><div class="chips">'+S.custom.map(function(t,i){return '<span class="custom"><button class="bubble" data-a="phrase" data-t="'+esc(t)+'">'+esc(t)+'</button><button class="rm" data-a="rmCustom" data-i="'+i+'" aria-label="Delete phrase '+esc(t)+'">×</button></span>'}).join('')+'</div></section>';
+  $('#boards').innerHTML=h;
+}
+function stripText(){return S.strip.join(' ')}
+function copyText(t,done){
+  function fb(){var ta=document.createElement('textarea');ta.className='copyfb';ta.value=t;ta.readOnly=true;var o=$('#prepOut');o.appendChild(ta);ta.focus();ta.select();var ok=false;try{ok=document.execCommand('copy')}catch(e){}if(ok){ta.remove();done&&done()}else toast('Select the text and copy it')}
+  try{navigator.clipboard.writeText(t).then(function(){done&&done()},fb)}catch(e){fb()}
+}
+
+/* ---------- garden ---------- */
+function skillState(id){return S.skills[id]}
+function skillCard(k){
+  var st=skillState(k.id),on=!!(st&&st.on),lvl=on?st.done.filter(Boolean).length:0,can=S.stitches>=k.cost;
+  return '<article class="skill h-'+k.h+(on?'':' locked')+'"><div class="plant">'+plant(lvl,!on)+'</div><div><h3>'+k.n+'</h3><p class="muted">'+k.tag+'</p></div>'+
+   '<div class="bar" aria-hidden="true"><i style="width:'+(lvl*25)+'%"></i></div><div class="row" style="justify-content:space-between"><span class="pill">'+(on?STAGES[lvl]+' · '+lvl+'/4 quests':'Locked')+'</span></div>'+
+   (on?'<button class="btn h" data-a="openSkill" data-id="'+k.id+'">Open quests</button>':'<div class="row"><button class="btn h" data-a="unlock" data-id="'+k.id+'"'+(can?'':' disabled')+'>Unlock · '+k.cost+'</button><button class="btn ghost small" data-a="openSkill" data-id="'+k.id+'">Preview</button></div>'+(can?'':'<p class="muted" style="font-size:.85rem">Need '+(k.cost-S.stitches)+' more petals. Learn signs to earn them.</p>'))+'</article>';
+}
+function renderGarden(){$('#gardenGrid').innerHTML=SKILLS.map(skillCard).join('')}
+var openId=null,dd=null;
+function openSheet(html){$('#sheetBody').innerHTML=html;$('#sheet').hidden=false;lastFocus=document.activeElement;var c=$('#sheetBody [data-a="closeSheet"]');if(c)c.focus()}
+var lastFocus=null;
+function closeSheet(){$('#sheet').hidden=true;openId=null;if(lastFocus&&lastFocus.focus)try{lastFocus.focus()}catch(e){}}
+function sheetHtml(k){
+  var st=skillState(k.id),on=!!(st&&st.on),done=on?st.done:[false,false,false,false],lvl=done.filter(Boolean).length;
+  var h='<div class="h-'+k.h+'"><div class="row" style="justify-content:flex-end"><button class="btn ghost small" data-a="closeSheet">Close</button></div>';
+  h+='<div class="sheethead"><div class="sheetplant">'+plant(lvl,!on)+'</div><div style="display:grid;gap:6px"><h2 style="font-size:2rem">'+k.n+'</h2><span class="pill" style="justify-self:start">'+(on?STAGES[lvl]:'Locked')+'</span><p class="muted">'+k.tag+'</p></div></div>';
+  h+='<div class="card" style="margin-bottom:14px"><h3 style="font-size:1.1rem">Why it can feel natural</h3><p style="margin-top:6px">'+k.why+'</p><h3 style="font-size:1.1rem;margin-top:14px">Tools that help</h3><ul class="tips">'+k.tips.map(function(t){return '<li>'+t+'</li>'}).join('')+'</ul><h3 style="font-size:1.1rem;margin-top:14px">Signs to practise with it</h3><div class="row" style="margin-top:8px">'+k.signs.map(function(id){var s=SIGNS.filter(function(x){return x.id===id})[0];return '<button class="btn small soft" data-a="findSign" data-id="'+id+'">'+s.w+'</button>'}).join('')+'</div></div>';
+  if(!on){
+    h+='<div class="stitched"><p>Unlock this skill for <b>'+k.cost+' petals</b> to start its four quests.</p><div class="row" style="margin-top:12px"><button class="btn h" data-a="unlock" data-id="'+k.id+'"'+(S.stitches>=k.cost?'':' disabled')+'>Unlock · '+k.cost+'</button><span class="muted">You have '+S.stitches+'</span></div></div>';
+    h+='<h3 style="font-size:1.2rem;margin:16px 0 8px">Quests inside</h3><div class="grid">'+k.q.map(function(q,i){return '<div class="quest lockq"><span class="n">'+(i+1)+'</span><div><b>'+q[0]+'</b></div></div>'}).join('')+'</div>';
+  }else{
+    if(k.id==='maths')h+='<div class="card" style="margin-bottom:14px"><h3 style="font-size:1.2rem;margin-bottom:10px">Dot Dash</h3><div id="ddBox"></div></div>';
+    h+='<h3 style="font-size:1.2rem;margin:4px 0 8px">Quests</h3><div class="grid">'+k.q.map(function(q,i){
+      var isDone=done[i],avail=i===0||done[i-1],canUndo=isDone&&!done[i+1];
+      var btn=isDone?(canUndo?'<button class="btn small ghost" data-a="quest" data-id="'+k.id+'" data-i="'+i+'">Undo</button>':'<span class="pill">Done</span>'):(avail&&!(k.id==='maths'&&i===0)?'<button class="btn small h" data-a="quest" data-id="'+k.id+'" data-i="'+i+'">Mark done</button>':'<span class="pill">'+(k.id==='maths'&&i===0&&avail?S.dots+'/5 rounds':'Locked')+'</span>');
+      return '<div class="quest'+(isDone?' done':'')+(avail||isDone?'':' lockq')+'"><span class="n">'+(i+1)+'</span><div><b>'+q[0]+'</b><p>'+q[1]+'</p></div>'+btn+'</div>'}).join('')+'</div>';
+  }
+  return h+'</div>';
+}
+function showSkill(id){openId=id;openSheet(sheetHtml(SK[id]));if(id==='maths'&&skillState('maths').on)newDots()}
+function newDots(){
+  var a=1+Math.floor(Math.random()*8),b=1+Math.floor(Math.random()*8),sum=a+b,set={};set[sum]=1;
+  var o=[sum];while(o.length<4){var v=sum+Math.floor(Math.random()*7)-3;if(v>1&&!set[v]){set[v]=1;o.push(v)}}
+  dd={a:a,b:b,sum:sum,opts:shuffle(o),msg:''};paintDots();
+}
+function dotsHtml(n,c){var s='<div class="dots '+c+'" aria-label="'+n+' dots">';for(var i=0;i<n;i++)s+='<span class="dot"></span>';return s+'</div>'}
+function paintDots(){
+  var b=$('#ddBox');if(!b||!dd)return;
+  b.innerHTML='<div class="dd">'+dotsHtml(dd.a,'a')+'<span aria-hidden="true">+</span>'+dotsHtml(dd.b,'b')+'<span aria-hidden="true">=</span><span>?</span></div><div class="opts" style="grid-template-columns:repeat(4,1fr)">'+dd.opts.map(function(o){return '<button class="ans" data-a="ddAns" data-v="'+o+'">'+o+'</button>'}).join('')+'</div><p class="muted" style="margin-top:10px" aria-live="polite">'+(dd.msg||'Count both groups, then pick the total. Right rounds: '+S.dots+' of 5 needed.')+'</p>';
+}
+function doQuest(id,i,toggle){
+  var st=skillState(id),k=SK[id];if(!st||!st.on)return;
+  var key=id+':'+i;
+  if(toggle&&st.done[i]){st.done[i]=false;save();return}
+  st.done[i]=true;
+  if(!S.awarded[key]){S.awarded[key]=1;var lvl=st.done.filter(Boolean).length;earn(i===3?40:20,k.n+' grew to '+STAGES[lvl])}else save();
+}
+
+/* ---------- planner ---------- */
+function topicOptions(type){
+  if(type==='sign')return SIGNTOPICS.map(function(t){return ['Signs: '+t,'Signs: '+t]});
+  if(type==='skill')return SKILLS.filter(function(k){return S.skills[k.id]&&S.skills[k.id].on}).map(function(k){return [k.n+' practice',k.n+' practice']});
+  if(type==='rest')return [['Stretch and breathe','Stretch and breathe'],['Quiet time','Quiet time'],['Free play','Free play']];
+  return [];
+}
+function fillTopics(){
+  var t=$('#pType').value,o=topicOptions(t);
+  $('#pTopicWrap').hidden=t==='custom';$('#pTitleWrap').hidden=t!=='custom';
+  $('#pTopic').innerHTML=o.length?o.map(function(x){return '<option value="'+esc(x[0])+'">'+esc(x[1])+'</option>'}).join(''):'<option value="">Unlock a skill first</option>';
+}
+function buildPlannerStatic(){
+  $('#pDay').innerHTML=DNL.map(function(d,i){return '<option value="'+i+'"'+(i===todayIdx()?' selected':'')+'>'+d+'</option>'}).join('');
+  var g='<optgroup label="Sign language">'+SIGNTOPICS.map(function(t){return '<option value="sign:'+t+'">'+t+'</option>'}).join('')+'</optgroup><optgroup label="Skills">'+SKILLS.map(function(k){return '<option value="skill:'+k.id+'">'+k.n+'</option>'}).join('')+'</optgroup>';
+  $('#prepTopic').innerHTML=g;fillTopics();
+}
+function sessHtml(s){
+  return '<li class="sess t-'+s.type+(s.done?' done':'')+'"><button class="tick" data-a="sessDone" data-id="'+s.id+'" aria-pressed="'+!!s.done+'" aria-label="Mark '+esc(s.title)+' done"></button><div class="sbody"><b>'+esc(s.title)+'</b><span>'+s.time+' · '+s.min+' min'+(s.sample?' · example':'')+'</span></div><button class="x" data-a="sessDel" data-id="'+s.id+'" aria-label="Remove '+esc(s.title)+'">×</button></li>';
+}
+function renderPlanner(){
+  $('#sampleNote').hidden=!(S.sampleOn&&S.sessions.some(function(s){return s.sample}));
+  var mon=new Date();mon.setHours(0,0,0,0);mon.setDate(mon.getDate()-todayIdx());
+  var html='',plan=0,done=0;
+  for(var d=0;d<7;d++){
+    var dt=new Date(mon);dt.setDate(mon.getDate()+d);
+    var list=S.sessions.filter(function(s){return s.day===d}).sort(function(a,b){return a.time<b.time?-1:a.time>b.time?1:0});
+    list.forEach(function(s){plan+=s.min;if(s.done)done+=s.min});
+    html+='<div class="day'+(d===todayIdx()?' today':'')+'"><h3>'+DN[d]+'<span>'+dt.toLocaleDateString('en-IN',{day:'numeric',month:'short'})+'</span></h3>'+(list.length?'<ul>'+list.map(sessHtml).join('')+'</ul>':'<p class="empty">Free day. Add something or rest.</p>')+'</div>';
+  }
+  $('#week').innerHTML=html;
+  var pct=plan?Math.round(done/plan*100):0;
+  $('#weekStat').textContent=done+' of '+plan+' minutes done';
+  var bar=$('#weekBar');bar.setAttribute('aria-valuenow',pct);bar.firstElementChild.style.width=pct+'%';
+  checkNow();
+}
+function toMin(t){var p=t.split(':');return (+p[0])*60+(+p[1])}
+function addSession(o){S.sessions.push(Object.assign({id:uid(),done:false},o));save()}
+var clearArm=false,armT;
+var buzzed={};
+function checkNow(){
+  var bar=$('#nowBar'),n=new Date(),m=n.getHours()*60+n.getMinutes(),t=todayIdx();
+  var list=S.sessions.filter(function(s){return s.day===t&&!s.done}).sort(function(a,b){return a.time<b.time?-1:1});
+  var now=list.filter(function(s){var a=toMin(s.time);return m>=a&&m<a+s.min})[0];
+  var next=list.filter(function(s){var a=toMin(s.time);return a>m&&a-m<=30})[0];
+  if(now){bar.hidden=false;bar.innerHTML='<span class="pulse" aria-hidden="true"></span><span><b>Right now:</b> '+esc(now.title)+' until '+fmt(toMin(now.time)+now.min)+'</span><button class="btn small" data-a="sessDone" data-id="'+now.id+'">Mark done</button><a class="btn small soft" href="#planner">Planner</a>';
+    var k=now.id+ymd();if(!buzzed[k]){buzzed[k]=1;try{if(navigator.vibrate)navigator.vibrate([220,110,220])}catch(e){}}}
+  else if(next){bar.hidden=false;bar.innerHTML='<span><b>Up next at '+next.time+':</b> '+esc(next.title)+' ('+(toMin(next.time)-m)+' min away)</span><a class="btn small soft" href="#planner">Planner</a>'}
+  else{bar.hidden=true;bar.innerHTML=''}
+}
+function fmt(mins){mins=mins%1440;return String(Math.floor(mins/60)).padStart(2,'0')+':'+String(mins%60).padStart(2,'0')}
+var prep=null;
+function buildPrep(){
+  var v=$('#prepTopic').value.split(':'),m=+$('#prepMin').value,title,goal,mat,learn,make,type,tn;
+  var warm=Math.max(3,Math.round(m*.15)),lt=Math.round(m*.3),mk=Math.round(m*.4),rf=m-warm-lt-mk;
+  if(v[0]==='sign'){
+    tn=v[1];title='Signs: '+tn;type='sign';mat='A mirror, paper and pen, a friend if you can.';
+    if(tn==='Fingerspelling'){goal='Shape six new letters clearly and spell your own name.';learn='Open the Fingerspell tab. Pick six letters you do not know yet and copy each handshape slowly in a mirror.'}
+    else{var cs=SIGNS.filter(function(s){return s.cat===tn&&!S.learned[s.id]});if(cs.length<4)cs=SIGNS.filter(function(s){return s.cat===tn});cs=cs.slice(0,4);
+      goal='Learn and use '+cs.length+' '+tn.toLowerCase()+' signs: '+cs.map(function(s){return s.w}).join(', ')+'.';
+      learn='Study these signs on their cards: '+cs.map(function(s){return s.w}).join(', ')+'. Look at where each one happens, then how the hands move, then the face.'}
+    make='Practise in pairs: one person signs, the other guesses. Swap every three rounds. On your own, sign in a mirror and compare with the card.';
+  }else{
+    var k=SK[v[1]];title=k.n;type='skill';var st=skillState(k.id);var qi=st&&st.on?Math.min(3,st.done.filter(Boolean).length):0;var q=k.q[qi];
+    goal='Finish the quest "'+q[0]+'".';mat='Paper, pen, a visual timer and the materials for '+k.n.toLowerCase()+'.';
+    learn='Read the quest and look at diagrams or captioned clips first. Quest: '+q[0]+'.';make='Try it: '+q[1];
+  }
+  var steps=[
+   {n:'Warm-up',m:warm,t:v[0]==='sign'?'Stretch your hands and wrists. Wave, smile and review three signs you already know.':'Stretch your hands and wrists, lay out your materials and set a flashing or vibrating timer for the lesson.'},
+   {n:'Learn',m:lt,t:learn},{n:'Practise',m:mk,t:make},
+   {n:'Share and reflect',m:rf,t:'Show someone what you did. Tick what you learned in the app and write one thing to try next time.'}];
+  prep={title:title,type:type,goal:goal,mat:mat,steps:steps,min:m};
+  var days=DNL.map(function(d,i){return '<option value="'+i+'"'+(i===todayIdx()?' selected':'')+'>'+d+'</option>'}).join('');
+  $('#prepOut').innerHTML='<div class="lesson"><h3 style="font-size:1.35rem">'+esc(title)+' · '+m+' minutes</h3><p><b>Goal:</b> '+esc(goal)+'</p><p class="muted"><b>You need:</b> '+esc(mat)+'</p>'+
+   steps.map(function(s){return '<div class="lstep"><div class="m">'+s.m+'<small>min</small></div><div><b>'+s.n+'</b><p>'+esc(s.t)+'</p></div></div>'}).join('')+
+   '<div class="pform"><label class="f">Day<select id="prepDay">'+days+'</select></label><label class="f">Start<input type="time" id="prepTime" value="16:00"></label><button class="btn" data-a="prepAdd">Add to planner</button><button class="btn soft" data-a="prepCopy">Copy outline</button></div></div>';
+}
+function prepText(){var p=prep;return p.title+' ('+p.min+' minutes)\nGoal: '+p.goal+'\nYou need: '+p.mat+'\n\n'+p.steps.map(function(s){return s.m+' min  '+s.n+': '+s.t}).join('\n')}
+
+/* ---------- actions ---------- */
+var A={
+ theme:function(){var root=document.documentElement;var eff=root.getAttribute('data-theme')||(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');var nx=eff==='dark'?'light':'dark';root.setAttribute('data-theme',nx);S.theme=nx;save()},
+ scale:function(){var o=[1,1.15,1.3],i=(o.indexOf(S.scale)+1)%o.length;S.scale=o[i];document.documentElement.style.setProperty('--scale',S.scale);$('#scaleBtn').textContent=['A+','A++','A'][i];save()},
+ learn:function(el){var id=el.dataset.id;if(S.learned[id]){delete S.learned[id];save()}else{S.learned[id]=1;earn(10,'new sign learned')}refreshView()},
+ findSign:function(el){var s=SIGNS.filter(function(x){return x.id===el.dataset.id})[0];closeSheet();signTab='cards';signFilter='All';go('signs');$('#signSearch').value=s.w;renderSignGrid();$$('[data-a="signFilter"]').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.v==='All')})},
+ signTab:function(el){signTab=el.dataset.v;if(signTab==='quiz'&&!quiz)renderQuiz();renderSigns()},
+ signFilter:function(el){signFilter=el.dataset.v;renderSigns()},
+ startQuiz:startQuiz,
+ answer:function(el){if(quiz.ans)return;var q=quiz.qs[quiz.i];quiz.ans=el.dataset.id;if(quiz.ans===q.s.id){quiz.score++;earn(5)}renderQuiz()},
+ nextQ:function(){quiz.i++;quiz.ans=null;renderQuiz()},
+ alpha:function(){if(S.alpha){S.alpha=false;save()}else{S.alpha=true;if(!S.awarded.alpha){S.awarded.alpha=1;earn(20,'alphabet learned')}else save()}renderSpell()},
+ talent:runTalent,
+ openSkillGo:function(el){go('garden');showSkill(el.dataset.id)},
+ openSkill:function(el){showSkill(el.dataset.id)},
+ closeSheet:closeSheet,
+ unlock:function(el){var k=SK[el.dataset.id];if(S.stitches<k.cost)return;S.stitches-=k.cost;S.skills[k.id]={on:true,done:[false,false,false,false]};touch();save();paintHeader();toast(k.n+' unlocked. Open its quests.');renderGarden();if(openId===k.id)showSkill(k.id)},
+ quest:function(el){doQuest(el.dataset.id,+el.dataset.i,true);renderGarden();showSkill(el.dataset.id)},
+ ddAns:function(el){if(!dd)return;if(+el.dataset.v===dd.sum){S.dots++;S.awarded.dotsXp=(S.awarded.dotsXp||0);earn(3,'dot sum right');if(S.dots>=5&&!SK.maths&&false){}
+   var st=skillState('maths');if(S.dots>=5&&st&&!st.done[0]){doQuest('maths',0,false);renderGarden();showSkill('maths');return}
+   newDots()}else{dd.msg='Count again. Each group has its own colour.';paintDots()}},
+ phrase:function(el){S.strip.push(el.dataset.t);save();renderTalk()},
+ stripRm:function(el){S.strip.splice(+el.dataset.i,1);save();renderTalk()},
+ undo:function(){S.strip.pop();save();renderTalk()},
+ clearStrip:function(){S.strip=[];save();renderTalk()},
+ addCustom:function(){var i=$('#customIn'),v=i.value.trim();if(!v)return toast('Type a phrase first');if(S.custom.indexOf(v)<0)S.custom.push(v);i.value='';save();renderTalk()},
+ rmCustom:function(el){S.custom.splice(+el.dataset.i,1);save();renderTalk()},
+ showBig:function(){var t=stripText();if(!t)return toast('Build a sentence first');$('#bigText').textContent=t;$('#big').hidden=false},
+ closeBig:function(){$('#big').hidden=true},
+ speak:function(){var t=stripText();if(!t)return toast('Build a sentence first');sayText(t,'Speech is not available here. Use Show big instead.')},
+ music:toggleMusic,
+ testVoice:function(){sayText('Hello, it is lovely to meet you.','Speech is not available here.')},
+ addSession:function(){var t=$('#pType').value,title=t==='custom'?$('#pTitle').value.trim():$('#pTopic').value;if(!title)return toast(t==='custom'?'Give your session a title':'Unlock a skill first');
+   addSession({day:+$('#pDay').value,time:$('#pTime').value||'16:00',min:+$('#pMin').value,type:t,title:title});if(t==='custom')$('#pTitle').value='';renderPlanner();toast('Session added')},
+ sessDone:function(el){var s=S.sessions.filter(function(x){return x.id===el.dataset.id})[0];if(!s)return;s.done=!s.done;if(s.done&&!S.awarded[s.id]){S.awarded[s.id]=1;earn(8,'session done')}else save();refreshView();checkNow()},
+ sessDel:function(el){S.sessions=S.sessions.filter(function(x){return x.id!==el.dataset.id});save();renderPlanner()},
+ clearSamples:function(){S.sessions=S.sessions.filter(function(s){return !s.sample});S.sampleOn=false;save();renderPlanner()},
+ clearWeek:function(){var b=$('#clearWeekBtn');if(!clearArm){clearArm=true;b.textContent='Tap again to clear';clearTimeout(armT);armT=setTimeout(function(){clearArm=false;b.textContent='Clear week'},3000)}else{S.sessions=[];S.sampleOn=false;save();clearArm=false;b.textContent='Clear week';renderPlanner()}},
+ autoPlan:function(){S.sessions=S.sessions.filter(function(s){return !s.sample});S.sampleOn=false;
+   var un=SKILLS.filter(function(k){return S.skills[k.id]&&S.skills[k.id].on}),si=0,ki=0;
+   for(var d=0;d<7;d++){
+     if(S.sessions.some(function(s){return s.day===d}))continue;
+     if(d===6)addSession({day:d,time:'11:00',min:30,type:'rest',title:'Stretch and breathe'});
+     else if(d%2===0||!un.length)addSession({day:d,time:'16:00',min:20,type:'sign',title:'Signs: '+SIGNTOPICS[si++%SIGNTOPICS.length]});
+     else addSession({day:d,time:'16:00',min:25,type:'skill',title:un[ki++%un.length].n+' practice'});
+   }
+   renderPlanner();toast('Your week is planned')},
+ buildPrep:buildPrep,
+ prepAdd:function(){if(!prep)return;addSession({day:+$('#prepDay').value,time:$('#prepTime').value||'16:00',min:prep.min,type:prep.type,title:'Lesson: '+prep.title});renderPlanner();toast('Lesson added to your week')},
+ prepCopy:function(){if(!prep)return;copyText(prepText(),function(){toast('Outline copied')})}
+};
+function refreshView(){if(cur==='home')renderHome();if(cur==='signs')renderSigns();if(cur==='planner')renderPlanner();paintHeader()}
+
+document.addEventListener('click',function(e){var el=e.target.closest('[data-a]');if(!el)return;var a=el.dataset.a;if(A[a]){e.stopPropagation();A[a](el)}});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){if(!$('#big').hidden)A.closeBig();else if(!$('#sheet').hidden)closeSheet()}
+  if((e.key==='Enter'||e.key===' ')&&e.target.id==='big'){e.preventDefault();A.closeBig()}});
+$('#sheet').addEventListener('click',function(e){if(e.target.id==='sheet')closeSheet()});
+$('#signSearch').addEventListener('input',renderSignGrid);
+$('#spellIn').addEventListener('input',renderSpell);
+$('#vidIn').addEventListener('input',renderVideos);
+$('#pType').addEventListener('change',fillTopics);
+$('#customIn').addEventListener('keydown',function(e){if(e.key==='Enter')A.addCustom()});
+window.addEventListener('hashchange',route);
+
+/* ---------- init ---------- */
+if(S.theme)document.documentElement.setAttribute('data-theme',S.theme);
+document.documentElement.style.setProperty('--scale',S.scale);
+$('#scaleBtn').textContent=({1:'A+',1.15:'A++',1.3:'A'})[S.scale]||'A+';
+buildTalent();buildPlannerStatic();makePetals();initCalm();paintHeader();route();checkNow();
+setInterval(checkNow,30000);
+})();
+</script>
+
+</body></html>
